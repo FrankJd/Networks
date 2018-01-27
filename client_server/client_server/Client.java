@@ -15,11 +15,12 @@ public class Client{
 
 	// Creating constructor. 
 	 public Client(){
-	// Setting up the GUI Frame.  
-		 start();	 
 	// Setting up the Fixed Frame size to 600,750.
 		GUI_Client.setSize (1500, 900);
 		GUI_Client.setResizable(true);
+	// Setting up the GUI Frame.  
+		 start();	 
+	
 		// Displaying the GUI 
 		GUI_Client.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GUI_Client.setVisible(true);
