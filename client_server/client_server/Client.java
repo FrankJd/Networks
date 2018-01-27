@@ -26,7 +26,19 @@ public class Client{
 	 }
 	 
 	 // Starting the GUI. 
+
 	 private void start(){	
+		 	/*
+			-------------------------------------------------------
+			Creating the GUI.
+			Use:  start();
+			-------------------------------------------------------
+			Preconditions:
+				no input
+			Postconditions:
+				returns void
+			-------------------------------------------------------
+			*/
 		// Setting up the JPanles to organize the GUI.		
 		IP_PORT_Panle();
 		Communications_Panel();
@@ -37,7 +49,7 @@ public class Client{
 			-------------------------------------------------------
 			Creating A JPanle that holds the IP and Port number GUI 
 			elements to organize the GUI.
-			Use:  Communications_Panel();
+			Use:  IP_PORT_Panle();
 			-------------------------------------------------------
 			Preconditions:
 				no input
