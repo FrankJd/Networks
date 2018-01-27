@@ -11,22 +11,23 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 
 public class Client{
+	
 	 JFrame GUI_Client = new JFrame("Client");
 
-	// Creating constructor. 
+			// Creating constructor. 
 	 public Client(){
-	// Setting up the Fixed Frame size to 600,750.
-		GUI_Client.setSize (1500, 900);
-		GUI_Client.setResizable(true);
-	// Setting up the GUI Frame.  
-		 start();	 
+			// Setting up the Fixed Frame size to 600,750.
+			GUI_Client.setSize (1500, 900);
+			GUI_Client.setResizable(true);
+			// Setting up the GUI Frame.  
+		 	start();	 
 	
-		// Displaying the GUI 
-		GUI_Client.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		GUI_Client.setVisible(true);
+			// Displaying the GUI 
+			GUI_Client.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			GUI_Client.setVisible(true);
 	 }
 	 
-	 // Starting the GUI. 
+			// Starting the GUI. 
 
 	 private void start(){	
 		 	/*
@@ -40,9 +41,9 @@ public class Client{
 				returns void
 			-------------------------------------------------------
 			*/
-		// Setting up the JPanles to organize the GUI.		
-		IP_PORT_Panle();
-		Communications_Panel();
+			// Setting up the JPanles to organize the GUI.		
+			IP_PORT_Panle();
+			Communications_Panel();
 	 }
 	 
 	 private void IP_PORT_Panle(){
