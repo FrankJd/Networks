@@ -102,6 +102,8 @@ public class Client{
 			// Setting up the Client and Server textAreas. 
 			JTextArea Client_textArea = new JTextArea(10, 50);
 			JTextArea Server_textArea = new JTextArea(10, 50);
+		 	// Disabling the Editing feature for the Server_textArea
+		 	Server_textArea.setEditable(false);
 			JButton Submit  = new JButton("Send - - - >");
 			JLabel Client_textArea_Label  = new JLabel("REQUEST:"); 
 			JLabel Server_textArea_Lable  = new JLabel("OUTPUT:");
