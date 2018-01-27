@@ -11,14 +11,12 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 
 public class Client{
-	JFrame GUI_Client = new JFrame("Client");
+	 JFrame GUI_Client = new JFrame("Client");
 
 	// Creating constructor. 
 	 public Client(){
 	// Setting up the GUI Frame.  
-		
-		 start();
-		 
+		 start();	 
 	// Setting up the Fixed Frame size to 600,750.
 		GUI_Client.setSize (1500, 900);
 		GUI_Client.setResizable(true);
@@ -27,17 +25,26 @@ public class Client{
 		GUI_Client.setVisible(true);
 	 }
 	 
- 
 	 // Starting the GUI. 
-	 private void start(){
-		
+	 private void start(){	
 		// Setting up the JPanles to organize the GUI.		
 		IP_PORT_Panle();
 		Communications_Panel();
-
 	 }
 	 
 	 private void IP_PORT_Panle(){
+			/*
+			-------------------------------------------------------
+			Creating A JPanle that holds the IP and Port number GUI 
+			elements to organize the GUI.
+			Use:  Communications_Panel();
+			-------------------------------------------------------
+			Preconditions:
+				no input
+			Postconditions:
+				returns void
+			-------------------------------------------------------
+			*/	 
 			// Setting up the IP and Port number textFields.
 			JTextField IP = new JTextField(25);
 			JTextField Port = new JTextField(10);
@@ -65,9 +72,21 @@ public class Client{
 			
 		 
 	 }
-  
+
 	 private void Communications_Panel(){
-		// Setting up the Client and Server textAreas. 
+			/*
+			-------------------------------------------------------
+			Creating A JPanle that holds JPanles to organize the GUI.
+			Use:  Communications_Panel();
+			-------------------------------------------------------
+			Preconditions:
+				no input
+			Postconditions:
+				returns void
+			-------------------------------------------------------
+			*/	 
+
+			// Setting up the Client and Server textAreas. 
 			JTextArea Client_textArea = new JTextArea(10, 50);
 			JTextArea Server_textArea = new JTextArea(10, 50);
 			JButton Submit  = new JButton("Send - - - >");
@@ -75,26 +94,26 @@ public class Client{
 			JLabel Server_textArea_Lable  = new JLabel("OUTPUT:");
 			
 		 
-		// Setting up JPanles for Client and Server communications.
+			// Setting up JPanles for Client and Server communications.
 			JPanel ComuncationsPane = new JPanel();
 			ComuncationsPane.setLayout(new BoxLayout(ComuncationsPane,BoxLayout.X_AXIS));
 			
-		// Setting up JPanle for Client Requests.	
+			// Setting up JPanle for Client Requests.	
 			JPanel ClientPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 			ClientPanel.add(Client_textArea_Label);
-		// Adding the Client JPanle to the Communications JPanle.	
+			// Adding the Client JPanle to the Communications JPanle.	
 			ComuncationsPane.add(ClientPanel);
 			ComuncationsPane.add(new JScrollPane(Client_textArea));
 			
-		// Setting up JPanle for data Communications 
+			// Setting up JPanle for data Communications 
 			JPanel SendPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			SendPanel.add(Submit);
-		// Adding the SendPanel JPanle to the Communications JPanle.
+			// Adding the SendPanel JPanle to the Communications JPanle.
 			ComuncationsPane.add(SendPanel);
-		// Setting up JPanle for server
+			// Setting up JPanle for server
 			JPanel ServerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 			ServerPanel.add(Server_textArea_Lable);
-		// Adding the ServerPanel JPanle to the Communications JPanle.
+			// Adding the ServerPanel JPanle to the Communications JPanle.
 			ComuncationsPane.add(ServerPanel);
 			ComuncationsPane.add(new JScrollPane(Server_textArea));
 
