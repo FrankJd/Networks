@@ -12,19 +12,19 @@ import javax.swing.JToggleButton;
 
 public class Client{
 	
-	 JFrame GUI_Client = new JFrame("Client");
+	 JFrame guiClient = new JFrame("Client");
 
 			// Creating constructor. 
 	 public Client(){
 			// Setting up the Fixed Frame size to 600,750.
-			GUI_Client.setSize (1500, 900);
-			GUI_Client.setResizable(true);
+		 	guiClient.setSize (1500, 900);
+		 	guiClient.setResizable(true);
 			// Setting up the GUI Frame.  
 		 	start();	 
 	
 			// Displaying the GUI 
-			GUI_Client.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			GUI_Client.setVisible(true);
+		 	guiClient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		 	guiClient.setVisible(true);
 	 }
 	 
 			// Starting the GUI. 
@@ -42,11 +42,12 @@ public class Client{
 			-------------------------------------------------------
 			*/
 			// Setting up the JPanles to organize the GUI.		
-			IP_PORT_Panle();
-			Communications_Panel();
+	
+		 	ipPanle();
+		 	communicationsPanel();
 	 }
 	 
-	 private void IP_PORT_Panle(){
+	 private void ipPanle(){
 			/*
 			-------------------------------------------------------
 			Creating A JPanle that holds the IP and Port number GUI 
@@ -60,34 +61,34 @@ public class Client{
 			-------------------------------------------------------
 			*/	 
 			// Setting up the IP and Port number textFields.
-			JTextField IP = new JTextField(25);
-			JTextField Port = new JTextField(10);
+			JTextField ip = new JTextField(25);
+			JTextField port = new JTextField(10);
 			
 			// Setting up Labels. 
-			JLabel IP_Label = new JLabel("IP:");
-			JLabel Port_Label  = new JLabel("Port:");
+			JLabel ipLabel = new JLabel("IP:");
+			JLabel portLabel  = new JLabel("Port:");
 			
 			// Setting up buttons. 
 			JToggleButton connect = new JToggleButton("Connect");
 			
 			// Setting up a JPanle for the IP and port Number.
-			JPanel IP_PORT_Panle = new JPanel();
-			IP_PORT_Panle.setLayout(new FlowLayout());
+			JPanel ipPanle = new JPanel();
+			ipPanle.setLayout(new FlowLayout());
 			
 			// Adding GUI elements to the JPanle.
-			IP_PORT_Panle.add(IP_Label);
-			IP_PORT_Panle.add(IP);
-			IP_PORT_Panle.add(Port_Label);
-			IP_PORT_Panle.add(Port);
-			IP_PORT_Panle.add(connect);
+			ipPanle.add(ipLabel);
+			ipPanle.add(ip);
+			ipPanle.add(portLabel);
+			ipPanle.add(port);
+			ipPanle.add(connect);
 			
 			// Adding the JPanle to the SOUTH section of the frame. 
-			GUI_Client.add(IP_PORT_Panle, BorderLayout.SOUTH);
+			guiClient.add(ipPanle, BorderLayout.SOUTH);
 			
 		 
 	 }
 
-	 private void Communications_Panel(){
+	 private void communicationsPanel(){
 			/*
 			-------------------------------------------------------
 			Creating A JPanle that holds JPanles to organize the GUI.
@@ -101,10 +102,10 @@ public class Client{
 			*/	 
 
 			// Setting up the Client and Server textAreas. 
-			JTextArea Client_textArea = new JTextArea(10, 50);
-			JTextArea Server_textArea = new JTextArea(10, 50);
+			JTextArea clientTextarea = new JTextArea(10, 50);
+			JTextArea serverTextarea = new JTextArea(10, 50);
 		 	// Disabling the Editing feature for the Server_textArea
-		 	Server_textArea.setEditable(false);
+			serverTextarea.setEditable(false);
 			JButton Submit  = new JButton("Send - - - >");
 			JLabel Client_textArea_Label  = new JLabel("REQUEST:"); 
 			JLabel Server_textArea_Lable  = new JLabel("OUTPUT:");
@@ -119,7 +120,7 @@ public class Client{
 			ClientPanel.add(Client_textArea_Label);
 			// Adding the Client JPanle to the Communications JPanle.	
 			ComuncationsPane.add(ClientPanel);
-			ComuncationsPane.add(new JScrollPane(Client_textArea));
+			ComuncationsPane.add(new JScrollPane(clientTextarea));
 			
 			// Setting up JPanle for data Communications 
 			JPanel SendPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -131,9 +132,9 @@ public class Client{
 			ServerPanel.add(Server_textArea_Lable);
 			// Adding the ServerPanel JPanle to the Communications JPanle.
 			ComuncationsPane.add(ServerPanel);
-			ComuncationsPane.add(new JScrollPane(Server_textArea));
+			ComuncationsPane.add(new JScrollPane(serverTextarea));
 
-			GUI_Client.add(ComuncationsPane);
+			guiClient.add(ComuncationsPane);
 		
 		 
 	 }
@@ -142,4 +143,3 @@ public class Client{
 	 }
 
 }
-
