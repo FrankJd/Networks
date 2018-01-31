@@ -1,7 +1,10 @@
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,7 +20,7 @@ public class Client{
 			// Creating constructor. 
 	 public Client(){
 			// Setting up the Fixed Frame size to 600,750.
-		 	guiClient.setSize (1500, 900);
+		 	guiClient.setSize (850, 800);
 		 	guiClient.setResizable(true);
 			// Setting up the GUI Frame.  
 		 	start();	 
@@ -60,13 +63,24 @@ public class Client{
 				returns void
 			-------------------------------------------------------
 			*/	 
+		 	
+		 	String[] requestOptions = {"REQUEST TYPE","SUBMIT","UPDATE","REMOVE","GET"};
+		 	
+		 	JComboBox dropBox = new JComboBox(requestOptions);
+		 	
 			// Setting up the IP and Port number textFields.
-			JTextField ip = new JTextField(25);
+			JTextField ip = new JTextField(10);
 			JTextField port = new JTextField(10);
+			
+			JCheckBox checkbox4 = new JCheckBox("ALL");
+			JCheckBox checkbox2 = new JCheckBox("BibTrx");   
+			
+			JButton Submit  = new JButton("Send");
 			
 			// Setting up Labels. 
 			JLabel ipLabel = new JLabel("IP:");
 			JLabel portLabel  = new JLabel("Port:");
+			JLabel dropLable = new JLabel("Requests Options:");
 			
 			// Setting up buttons. 
 			JToggleButton connect = new JToggleButton("Connect");
@@ -81,9 +95,15 @@ public class Client{
 			ipPanle.add(portLabel);
 			ipPanle.add(port);
 			ipPanle.add(connect);
+			ipPanle.add(Submit);
+			ipPanle.add(dropLable);
+			ipPanle.add(dropBox);
+			ipPanle.add(checkbox4);
+			ipPanle.add(checkbox2);
+			
 			
 			// Adding the JPanle to the SOUTH section of the frame. 
-			guiClient.add(ipPanle, BorderLayout.SOUTH);
+			guiClient.add(ipPanle, BorderLayout.NORTH);
 			
 		 
 	 }
@@ -106,29 +126,29 @@ public class Client{
 			JTextArea serverTextarea = new JTextArea(10, 50);
 		 	// Disabling the Editing feature for the Server_textArea
 			serverTextarea.setEditable(false);
-			JButton Submit  = new JButton("Send - - - >");
+			//JButton Submit  = new JButton("Send - - - >");
 			JLabel Client_textArea_Label  = new JLabel("REQUEST:"); 
 			JLabel Server_textArea_Lable  = new JLabel("OUTPUT:");
 			
 		 
 			// Setting up JPanles for Client and Server communications.
 			JPanel ComuncationsPane = new JPanel();
-			ComuncationsPane.setLayout(new BoxLayout(ComuncationsPane,BoxLayout.X_AXIS));
+			ComuncationsPane.setLayout(new BoxLayout(ComuncationsPane,BoxLayout.Y_AXIS));
 			
 			// Setting up JPanle for Client Requests.	
-			JPanel ClientPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+			JPanel ClientPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			ClientPanel.add(Client_textArea_Label);
 			// Adding the Client JPanle to the Communications JPanle.	
 			ComuncationsPane.add(ClientPanel);
 			ComuncationsPane.add(new JScrollPane(clientTextarea));
 			
 			// Setting up JPanle for data Communications 
-			JPanel SendPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-			SendPanel.add(Submit);
+			JPanel SendPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+			//SendPanel.add(Submit);
 			// Adding the SendPanel JPanle to the Communications JPanle.
 			ComuncationsPane.add(SendPanel);
 			// Setting up JPanle for server
-			JPanel ServerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+			JPanel ServerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			ServerPanel.add(Server_textArea_Lable);
 			// Adding the ServerPanel JPanle to the Communications JPanle.
 			ComuncationsPane.add(ServerPanel);
