@@ -154,9 +154,9 @@ public class Client{
 			        boolean selected = abstractButton.getModel().isSelected();
 			        if (selected == true){
 			        	if (a.isEmpty()){
-			        	JOptionPane.showMessageDialog(null,  "Port Number is Required " , a, JOptionPane.INFORMATION_MESSAGE);
+			        	JOptionPane.showMessageDialog(null,  "Port Number is Required " , a, JOptionPane.ERROR_MESSAGE);
 			        	}else if (b.isEmpty()){
-			        		JOptionPane.showMessageDialog(null,  "IP Number is Required " , a, JOptionPane.INFORMATION_MESSAGE);
+			        		JOptionPane.showMessageDialog(null,  "IP Number is Required " , a, JOptionPane.ERROR_MESSAGE);
 			        	}
 			        	else{
 			        	Submit.setEnabled(true);
