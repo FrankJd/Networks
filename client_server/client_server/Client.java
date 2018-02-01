@@ -1,6 +1,11 @@
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -20,6 +25,7 @@ public class Client{
 			// Creating constructor. 
 	 public Client(){
 			// Setting up the Fixed Frame size to 600,750.
+		 	//guiClient.pack();
 		 	guiClient.setSize (850, 800);
 		 	guiClient.setResizable(true);
 			// Setting up the GUI Frame.  
@@ -31,6 +37,7 @@ public class Client{
 	 }
 	 
 			// Starting the GUI. 
+
 
 	 private void start(){	
 		 	/*
@@ -50,7 +57,7 @@ public class Client{
 		 	communicationsPanel();
 	 }
 	 
-	 private void ipPanle(){
+	 public void ipPanle(){
 			/*
 			-------------------------------------------------------
 			Creating A JPanle that holds the IP and Port number GUI 
@@ -66,14 +73,16 @@ public class Client{
 		 	
 		 	String[] requestOptions = {"REQUEST TYPE","SUBMIT","UPDATE","REMOVE","GET"};
 		 	
+		 	JLabel msg = new JLabel("", JLabel.CENTER);
+		 	
+		 	
 		 	JComboBox dropBox = new JComboBox(requestOptions);
 		 	
 			// Setting up the IP and Port number textFields.
-			JTextField ip = new JTextField(10);
+			JTextField ip = new JTextField("127.0.0.1",10);
 			JTextField port = new JTextField(10);
 			
-			JCheckBox checkbox4 = new JCheckBox("ALL");
-			JCheckBox checkbox2 = new JCheckBox("BibTrx");   
+			  
 			
 			JButton Submit  = new JButton("Send");
 			
@@ -89,7 +98,36 @@ public class Client{
 			JPanel ipPanle = new JPanel();
 			ipPanle.setLayout(new FlowLayout());
 			
+		
+
+			ActionListener  x = new ActionListener() {
+			@Override
+		    public void actionPerformed(ActionEvent e) {
+			String s = (String) dropBox.getSelectedItem();
+			
+			switch (s){
+			case "GET":
+				JCheckBox checkbox4 = new JCheckBox("ALL");
+				JCheckBox checkbox2 = new JCheckBox("BibTrx"); 
+				ipPanle.add(checkbox4);
+				ipPanle.add(checkbox2);
+				guiClient.setVisible(true);
+				
+				
+					
+				 System.out.println("GET");
+				 break;
+			case "UPDATE":
+				System.out.println("UPDATE");
+				break;
+			default:
+				System.out.println("dfdfdf");
+			}
+				
+			}
+			};
 			// Adding GUI elements to the JPanle.
+			dropBox.addActionListener(x);
 			ipPanle.add(ipLabel);
 			ipPanle.add(ip);
 			ipPanle.add(portLabel);
@@ -98,10 +136,9 @@ public class Client{
 			ipPanle.add(Submit);
 			ipPanle.add(dropLable);
 			ipPanle.add(dropBox);
-			ipPanle.add(checkbox4);
-			ipPanle.add(checkbox2);
+			ipPanle.add(msg);
 			
-			
+		
 			// Adding the JPanle to the SOUTH section of the frame. 
 			guiClient.add(ipPanle, BorderLayout.NORTH);
 			
@@ -159,7 +196,9 @@ public class Client{
 		 
 	 }
 	 public static void main(String args[]){
-			new Client();		
+			Client x = new Client();	
+			
+			
 	 }
 
 }
