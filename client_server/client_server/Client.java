@@ -87,8 +87,8 @@ public class Client{
 		
 		
 		//JButton Submit  = new JButton("Send - - - >");
-		JLabel Client_textArea_Label  = new JLabel("REQUEST:"); 
-		JLabel Server_textArea_Lable  = new JLabel("OUTPUT:");
+		JLabel Client_textArea_Label  = new JLabel("Request:"); 
+		JLabel Server_textArea_Lable  = new JLabel("Output:");
 
 
 		// Setting up the IP and Port number textFields.
@@ -104,10 +104,10 @@ public class Client{
 		JLabel ipLabel = new JLabel("IP:");
 		JLabel portLabel  = new JLabel("Port:");
 		JLabel dropLable = new JLabel("Requests Options:");
-		JCheckBox all = new JCheckBox("ALL");
-		JCheckBox bitTex = new JCheckBox("BibTrx"); 
+		JCheckBox all = new JCheckBox("All");
+		JCheckBox bitTex = new JCheckBox("BibTeX"); 
 		// Setting up buttons. 
-		JToggleButton toggleButton = new JToggleButton("Conect");
+		JToggleButton toggleButton = new JToggleButton("Connect");
 		
 		
 		JPanel ComuncasPane = new JPanel();
