@@ -223,8 +223,14 @@ public class Client{
 								null,
 								"");
 						port.setText(r);
-						Submit.setEnabled(true);
-						toggleButton.setText("Disconnect");
+					
+						if (!port_b.isEmpty() && !ip_b.isEmpty()){
+							Submit.setEnabled(true);
+							toggleButton.setText("Disconnect");
+							}else{
+								JOptionPane.showMessageDialog(null,  "must establish a Port number and IP address" , null, JOptionPane.ERROR_MESSAGE);
+							}
+						
 
 					}else if(port_b.isEmpty()){
 						String r = (String)JOptionPane.showInputDialog(
@@ -236,8 +242,12 @@ public class Client{
 								null,
 								"");
 						port.setText(r);
-						Submit.setEnabled(true);
-						toggleButton.setText("Disconnect");
+						if (!port_b.isEmpty()){
+							Submit.setEnabled(true);
+							toggleButton.setText("Disconnect");
+							}else{
+								JOptionPane.showMessageDialog(null,  "must establish a Port number" , null, JOptionPane.ERROR_MESSAGE);
+							}
 
 
 					}else if(ip_b.isEmpty()){
@@ -250,10 +260,12 @@ public class Client{
 								null,
 								"127.0.0.1");
 						ip.setText(s);
-
+						if (!ip_b.isEmpty()){
 						Submit.setEnabled(true);
 						toggleButton.setText("Disconnect");
-
+						}else{
+							JOptionPane.showMessageDialog(null,  "must establish an IP number" , null, JOptionPane.ERROR_MESSAGE);
+						}
 
 					}else{
 						Submit.setEnabled(true);
