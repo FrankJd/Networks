@@ -4,6 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.JOptionPane;
 import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
@@ -95,6 +98,53 @@ public class Client{
 			ipPanle.setLayout(new FlowLayout());
 			
 			
+			
+			ip.addMouseListener(new MouseListener() {
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					
+				}
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+					
+					int n = JOptionPane.showConfirmDialog(
+							guiClient,
+						    "If you wish to establis an IP connection to the same machine or computer, you should use  127.0.0.1 as your IP address. Would you like to use 127.0.0.1 as your IP address?",
+						    "An Inane Question",
+						    JOptionPane.YES_NO_OPTION);
+					if (n == 0){
+						ip.setText("127.0.0.1"); 
+						
+					}
+				
+					
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+					
+					
+					
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent e) {
+				
+				}
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+				
+					
+				}
+			});
+			
+			
+			
+			
+			
+			
 			 ActionListener actionListener = new ActionListener() {
 			      public void actionPerformed(ActionEvent actionEvent) {
 			    	 String  a = port.getText();
@@ -173,10 +223,11 @@ public class Client{
 			};
 			// Adding GUI elements to the JPanle.
 			dropBox.addActionListener(x);
-			ipPanle.add(ipLabel);
-			ipPanle.add(ip);
+			
 			ipPanle.add(portLabel);
 			ipPanle.add(port);
+			ipPanle.add(ipLabel);
+			ipPanle.add(ip);
 			ipPanle.add(toggleButton);
 			ipPanle.add(Submit);
 			ipPanle.add(dropLable);
