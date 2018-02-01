@@ -90,7 +90,8 @@ public class Client{
 			JLabel ipLabel = new JLabel("IP:");
 			JLabel portLabel  = new JLabel("Port:");
 			JLabel dropLable = new JLabel("Requests Options:");
-			
+			JCheckBox checkbox4 = new JCheckBox("ALL");
+			JCheckBox checkbox2 = new JCheckBox("BibTrx"); 
 			// Setting up buttons. 
 			JToggleButton connect = new JToggleButton("Connect");
 			
@@ -107,21 +108,41 @@ public class Client{
 			
 			switch (s){
 			case "GET":
-				JCheckBox checkbox4 = new JCheckBox("ALL");
-				JCheckBox checkbox2 = new JCheckBox("BibTrx"); 
+				
 				ipPanle.add(checkbox4);
 				ipPanle.add(checkbox2);
 				guiClient.setVisible(true);
-				
-				
-					
-				 System.out.println("GET");
+
 				 break;
 			case "UPDATE":
+				ipPanle.remove(checkbox4);
+				guiClient.setVisible(true);
+				ipPanle.remove(checkbox2);
+				guiClient.setVisible(true);
 				System.out.println("UPDATE");
 				break;
+			case "SUBMIT":
+				ipPanle.remove(checkbox4);
+				guiClient.setVisible(true);
+				ipPanle.remove(checkbox2);
+				guiClient.setVisible(true);
+				System.out.println("UPDATE");
+				break;
+			case "REMOVE":
+				ipPanle.remove(checkbox4);
+				guiClient.setVisible(true);
+				ipPanle.remove(checkbox2);
+				guiClient.setVisible(true);
+				System.out.println("UPDATE");
+				break;
+				
 			default:
-				System.out.println("dfdfdf");
+				ipPanle.remove(checkbox4);
+				guiClient.setVisible(true);
+				ipPanle.remove(checkbox2);
+				guiClient.setVisible(true);
+				System.out.println("UPDATE");
+				break;
 			}
 				
 			}
