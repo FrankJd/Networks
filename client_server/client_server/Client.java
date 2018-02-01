@@ -1,4 +1,3 @@
-
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -6,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -21,7 +21,6 @@ import javax.swing.JToggleButton;
 public class Client{
 	
 	 JFrame guiClient = new JFrame("Client");
-
 			// Creating constructor. 
 	 public Client(){
 			// Setting up the Fixed Frame size to 600,750.
@@ -30,15 +29,11 @@ public class Client{
 		 	guiClient.setResizable(true);
 			// Setting up the GUI Frame.  
 		 	start();	 
-	
 			// Displaying the GUI 
 		 	guiClient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		 	guiClient.setVisible(true);
 	 }
-	 
 			// Starting the GUI. 
-
-
 	 private void start(){	
 		 	/*
 			-------------------------------------------------------
@@ -93,11 +88,28 @@ public class Client{
 			JCheckBox checkbox4 = new JCheckBox("ALL");
 			JCheckBox checkbox2 = new JCheckBox("BibTrx"); 
 			// Setting up buttons. 
-			JToggleButton connect = new JToggleButton("Connect");
+			JToggleButton toggleButton = new JToggleButton("Conect");
 			
 			// Setting up a JPanle for the IP and port Number.
 			JPanel ipPanle = new JPanel();
 			ipPanle.setLayout(new FlowLayout());
+			
+			
+			 ActionListener actionListener = new ActionListener() {
+			      public void actionPerformed(ActionEvent actionEvent) {
+			        AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
+			        boolean selected = abstractButton.getModel().isSelected();
+			        if (selected == true){
+			        	toggleButton.setText("Disconnect");
+			        }else{
+			        	toggleButton.setText("Conect");
+			        }
+			       
+			      }
+			    };
+			    
+			    
+			   toggleButton.addActionListener(actionListener);
 			
 		
 
@@ -153,7 +165,7 @@ public class Client{
 			ipPanle.add(ip);
 			ipPanle.add(portLabel);
 			ipPanle.add(port);
-			ipPanle.add(connect);
+			ipPanle.add(toggleButton);
 			ipPanle.add(Submit);
 			ipPanle.add(dropLable);
 			ipPanle.add(dropBox);
