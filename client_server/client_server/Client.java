@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
+import javax.swing.JOptionPane;
 import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -74,13 +74,13 @@ public class Client{
 		 	JComboBox dropBox = new JComboBox(requestOptions);
 		 	
 			// Setting up the IP and Port number textFields.
-			JTextField ip = new JTextField("127.0.0.1",10);
+			JTextField ip = new JTextField(10);
 			JTextField port = new JTextField(10);
 			
 			  
 			
 			JButton Submit  = new JButton("Send");
-			
+			Submit.setEnabled(false);
 			// Setting up Labels. 
 			JLabel ipLabel = new JLabel("IP:");
 			JLabel portLabel  = new JLabel("Port:");
@@ -97,11 +97,23 @@ public class Client{
 			
 			 ActionListener actionListener = new ActionListener() {
 			      public void actionPerformed(ActionEvent actionEvent) {
+			    	 String  a = port.getText();
+			    	 String  b = ip.getText();
+			    	 
 			        AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
 			        boolean selected = abstractButton.getModel().isSelected();
 			        if (selected == true){
+			        	if (a.isEmpty()){
+			        	JOptionPane.showMessageDialog(null,  "Port Number is Required " , a, JOptionPane.INFORMATION_MESSAGE);
+			        	}else if (b.isEmpty()){
+			        		JOptionPane.showMessageDialog(null,  "IP Number is Required " , a, JOptionPane.INFORMATION_MESSAGE);
+			        	}
+			        	else{
+			        	Submit.setEnabled(true);
 			        	toggleButton.setText("Disconnect");
+			        	}
 			        }else{
+			        	Submit.setEnabled(false);
 			        	toggleButton.setText("Conect");
 			        }
 			       
