@@ -214,6 +214,7 @@ public class Client{
 								null,
 								"127.0.0.1");
 						ip.setText(s);
+						ip_b = ip.getText();
 						String r = (String)JOptionPane.showInputDialog(
 								guiClient,
 								"please enter a port number",
@@ -223,6 +224,9 @@ public class Client{
 								null,
 								"");
 						port.setText(r);
+						port_b = port.getText();
+						
+						
 					
 						if (!port_b.isEmpty() && !ip_b.isEmpty()){
 							Submit.setEnabled(true);
@@ -242,6 +246,7 @@ public class Client{
 								null,
 								"");
 						port.setText(r);
+						port_b = port.getText();
 						if (!port_b.isEmpty()){
 							Submit.setEnabled(true);
 							toggleButton.setText("Disconnect");
@@ -260,6 +265,7 @@ public class Client{
 								null,
 								"127.0.0.1");
 						ip.setText(s);
+						ip_b = ip.getText();
 						if (!ip_b.isEmpty()){
 						Submit.setEnabled(true);
 						toggleButton.setText("Disconnect");
