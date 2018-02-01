@@ -1,3 +1,4 @@
+package A01;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -6,7 +7,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import javax.swing.JOptionPane;
 import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
@@ -83,6 +83,7 @@ public class Client{
 			  
 			
 			JButton Submit  = new JButton("Send");
+			JButton clear  = new JButton("Clear");
 			Submit.setEnabled(false);
 			// Setting up Labels. 
 			JLabel ipLabel = new JLabel("IP:");
@@ -98,6 +99,152 @@ public class Client{
 			ipPanle.setLayout(new FlowLayout());
 			
 			
+			clear.addMouseListener(new MouseListener() {
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					
+				}
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+					ip.setText("");
+					port.setText("");
+					toggleButton.setText("Conect");
+					
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+					
+					
+					
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent e) {
+				
+				}
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+				
+					
+				}
+			});
+			
+			
+			Submit.addMouseListener(new MouseListener() {
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					
+				}
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+					
+				
+					
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+					
+					
+					
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent e) {
+				
+				}
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					
+					if(!Submit.isEnabled()){
+					int n = JOptionPane.showConfirmDialog(
+							guiClient,
+						    "You must establish conections with the server. Would you like to create the conection",
+						    "An Inane Question",
+						    JOptionPane.YES_NO_OPTION);
+				
+					if (n == 0){
+						
+						String port_b = port.getText(); 
+						String ip_b = ip.getText();
+						
+						
+						if (port_b.isEmpty() && ip_b.isEmpty()){
+							
+							
+							
+							String s = (String)JOptionPane.showInputDialog(
+									guiClient,
+							                    "please enter a IP number",
+							                    "Customized Dialog",
+							                    JOptionPane.PLAIN_MESSAGE,
+							                    null,
+							                    null,
+							                    "127.0.0.1");
+							ip.setText(s);
+							String r = (String)JOptionPane.showInputDialog(
+									guiClient,
+							                    "please enter a port number",
+							                    "Customized Dialog",
+							                    JOptionPane.PLAIN_MESSAGE,
+							                    null,
+							                    null,
+							                    "");
+							port.setText(r);
+							
+							
+						}else if(port_b.isEmpty()){
+							String r = (String)JOptionPane.showInputDialog(
+									guiClient,
+							                    "please enter a port number",
+							                    "Customized Dialog",
+							                    JOptionPane.PLAIN_MESSAGE,
+							                    null,
+							                    null,
+							                    "");
+							port.setText(r);
+							
+							
+						}else if(ip_b.isEmpty()){
+							String s = (String)JOptionPane.showInputDialog(
+									guiClient,
+							                    "please enter a IP number",
+							                    "Customized Dialog",
+							                    JOptionPane.PLAIN_MESSAGE,
+							                    null,
+							                    null,
+							                    "127.0.0.1");
+							ip.setText(s);
+							
+							
+							
+						}else{
+							
+							
+						}
+					}else{
+						
+						JOptionPane.showMessageDialog(null,  "must establish a request typpe " , null, JOptionPane.ERROR_MESSAGE);
+						
+						
+					}
+						
+						
+						
+					}
+				}
+				
+			
+				
+				
+			});
+			
+			
 			
 			ip.addMouseListener(new MouseListener() {
 				@Override
@@ -107,7 +254,9 @@ public class Client{
 
 				@Override
 				public void mousePressed(MouseEvent e) {
+					String s = ip.getText();
 					
+					if (s.equals("")){
 					int n = JOptionPane.showConfirmDialog(
 							guiClient,
 						    "If you wish to establis an IP connection to the same machine or computer, you should use  127.0.0.1 as your IP address. Would you like to use 127.0.0.1 as your IP address?",
@@ -119,6 +268,7 @@ public class Client{
 					}
 				
 					
+				}
 				}
 
 				@Override
@@ -230,6 +380,7 @@ public class Client{
 			ipPanle.add(ip);
 			ipPanle.add(toggleButton);
 			ipPanle.add(Submit);
+			ipPanle.add(clear);
 			ipPanle.add(dropLable);
 			ipPanle.add(dropBox);
 			ipPanle.add(msg);
