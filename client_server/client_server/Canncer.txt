@@ -1,0 +1,251 @@
+if(!Submit.isEnabled()){
+					int n = JOptionPane.showConfirmDialog(
+							guiClient,
+							"You must establish conections with the server. Would you like to create the conection",
+							"An Inane Question",
+							JOptionPane.YES_NO_OPTION);
+
+					if (n == 0){
+
+						String port_b = port.getText(); 
+						String ip_b = ip.getText();
+
+
+						if (port_b.isEmpty() && ip_b.isEmpty()){
+
+
+
+							String s = (String)JOptionPane.showInputDialog(
+									guiClient,
+									"please enter a IP number",
+									"Customized Dialog",
+									JOptionPane.PLAIN_MESSAGE,
+									null,
+									null,
+									"127.0.0.1");
+							ip.setText(s);
+							String r = (String)JOptionPane.showInputDialog(
+									guiClient,
+									"please enter a port number",
+									"Customized Dialog",
+									JOptionPane.PLAIN_MESSAGE,
+									null,
+									null,
+									"");
+							port.setText(r);
+
+
+
+							String port_bb = port.getText(); 
+							String ip_bb = ip.getText();
+
+							if (port_bb.isEmpty() && ip_bb.isEmpty()){
+								JOptionPane.showMessageDialog(null,  "must establish a port number and ip address " , null, JOptionPane.ERROR_MESSAGE);
+
+
+							}else if(port_bb.isEmpty() && !ip_bb.isEmpty() ) {
+								JOptionPane.showMessageDialog(null,  "must establish a port number  " , null, JOptionPane.ERROR_MESSAGE);
+							}else if ( ip_bb.isEmpty() && !port_bb.isEmpty()){
+
+								JOptionPane.showMessageDialog(null,  "must establish an ip number " , null, JOptionPane.ERROR_MESSAGE);
+
+							}
+							else{
+								Submit.setEnabled(true);
+								toggleButton.setText("Disconnect");
+
+
+							}
+
+						}else if(port_b.isEmpty()){
+							String r = (String)JOptionPane.showInputDialog(
+									guiClient,
+									"please enter a port number",
+									"Customized Dialog",
+									JOptionPane.PLAIN_MESSAGE,
+									null,
+									null,
+									"");
+							port.setText(r);
+							Submit.setEnabled(true);
+							toggleButton.setText("Disconnect");
+
+
+						}else if(ip_b.isEmpty()){
+							String s = (String)JOptionPane.showInputDialog(
+									guiClient,
+									"please enter a IP number",
+									"Customized Dialog",
+									JOptionPane.PLAIN_MESSAGE,
+									null,
+									null,
+									"127.0.0.1");
+							ip.setText(s);
+							Submit.setEnabled(true);
+							toggleButton.setText("Disconnect");
+
+
+
+						}else{
+
+
+							Submit.setEnabled(true);
+							toggleButton.setText("Disconnect");
+
+
+						}
+					}else{
+
+
+
+
+
+						JOptionPane.showMessageDialog(null,  "must establish a request typpe " , null, JOptionPane.ERROR_MESSAGE);
+
+
+					}
+
+
+
+				}
+			}
+      
+      
+      
+      
+			boolean status_all = false;
+			boolean status_text = false;
+			@SuppressWarnings("deprecation")
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String s = (String) dropBox.getSelectedItem();
+				
+				
+				if (s.equals("GET")){
+					
+					if(status_all == false && status_text == false){
+						new_ipPanle.add(all);
+						new_ipPanle.add(bitTex);
+						guiClient.setVisible(true);
+						status_all = true;
+						status_text = true;
+						
+						
+					}else if (status_all == false){
+						new_ipPanle.add(all);
+						guiClient.setVisible(true);
+						status_all = true;
+						
+						
+					}else if (status_text == false){
+						new_ipPanle.add(bitTex);
+						guiClient.setVisible(true);
+						status_text = true;
+						
+						
+					}else {
+						
+						
+						
+					}
+					
+					
+				}else if (s.equals("UPDATE")){
+					System.out.println("sfsfsf");
+					System.out.println(status_all);
+					System.out.println(status_text);
+					
+					if (status_all == true && status_text == true){
+						new_ipPanle.remove(all);
+						new_ipPanle.remove(bitTex);
+						guiClient.setVisible(true);
+						status_all = false;
+						status_text = false;
+						
+					} else if (status_all == true ){
+						new_ipPanle.remove(all);
+						guiClient.setVisible(true);
+						status_all = false;
+						
+					} else if (status_text == true){
+						new_ipPanle.remove(bitTex);
+						guiClient.setVisible(true);
+						status_text = false;
+						
+						
+					}else{
+						
+							
+						
+					}
+			
+					
+				}else if (s.equals("REMOVE")){
+					
+					if(status_all == false && status_text == false){
+						new_ipPanle.add(all);
+						guiClient.setVisible(true);
+						status_all = true;
+						
+					}else if (status_all == false && status_text == true ){
+						new_ipPanle.add(all);
+						new_ipPanle.remove(bitTex);
+						guiClient.setVisible(true);
+						status_all = true;
+						status_text = false;
+						
+						
+					}else if (status_text == false){
+						new_ipPanle.add(bitTex);
+						guiClient.setVisible(true);
+						status_text = true;
+						
+						
+					}else {
+						
+						
+						
+					}
+					
+					
+					
+					
+				}else{
+					
+					if (status_all == true && status_text == true){
+						new_ipPanle.remove(all);
+						new_ipPanle.remove(bitTex);
+						guiClient.setVisible(true);
+						status_all = false;
+						status_text = false;
+						
+					} else if (status_all == true ){
+						new_ipPanle.remove(all);
+						guiClient.setVisible(true);
+						status_all = false;
+						
+					} else if (status_text == true){
+						new_ipPanle.remove(bitTex);
+						guiClient.setVisible(true);
+						status_text = false;
+						
+						
+					}else{
+						
+						
+						
+						
+						
+					}
+					
+					
+					
+				}
+				
+				
+				
+
+				
+				}
+		
+		
