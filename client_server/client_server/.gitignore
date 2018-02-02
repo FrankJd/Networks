@@ -2,3 +2,15 @@
 /Server.class
 /RequestHandler.class
 /t.class
+/Client.class
+/ClientHandler.class
+/ClientHandler$fields.class
+/ClientHandler$Fields.class
+/t$Fields.class
+/ClientHandler$Field.class
+/ClientHandlerExceptions.class
+/InvalidFieldException.class
+/RequestException.class
+/IsbnValidator.class
+/Bibliography.class
+/Bibliography$Book.class

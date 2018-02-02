@@ -12,6 +12,7 @@ public class Server {
 	public static void main(String argv[]) throws Exception {
 		int portNumber = new Integer(argv[0]);
 		//will throw exception if portNumber is invalid
+		@SuppressWarnings("resource")
 		ServerSocket socket = new ServerSocket(portNumber);
 
 		//continuously listen for connection requests
@@ -19,7 +20,7 @@ public class Server {
 		while (true) {
 			//listen and accept connection request
 			Socket connection = socket.accept();
-			RequestHandler request = new RequestHandler(connection);
+			ClientHandler request = new ClientHandler(connection);
 			Thread thread = new Thread(request);
 			thread.start();
 		}

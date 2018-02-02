@@ -1,15 +1,20 @@
 import java.util.HashMap;
 import java.util.Map;
+//import InvalidFieldException;
 
 public class t {
 
+	private enum Fields { ISBN, TITLE, AUTHOR, YEAR, PUBLISHER }; //possible fields in client request
+
 	public static void main(String[] args) {
-		Map test = new HashMap();
+		Map<Integer, Integer> test = new HashMap<Integer, Integer>(2);
+		String t = "is bn";
+		String[] arr;
 		
-		test.put(0, null);
-		test.put(1, 2);
-		test.put(1, 3);
-		System.out.print(test.values());
+		arr = t.split(" ", 1);
+		System.out.print(arr.;
+		
+
 
 	}
 
