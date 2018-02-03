@@ -6,7 +6,7 @@
  */
 
 public class IsbnValidator {
-	public boolean validIsbn(String isbn) {
+	public static boolean validIsbn(String isbn) {
 		int total = 0, checksum, digit;
 
 		//remove any hyphens

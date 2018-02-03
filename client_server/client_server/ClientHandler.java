@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +27,8 @@ import java.util.Map;
 public class ClientHandler implements Runnable {
 
 	public enum Field { ISBN, TITLE, AUTHOR, YEAR, PUBLISHER }; //possible fields in client request
-	private Map<Field, String> requestContent = new HashMap<Field, String>(5); //used to store content of client request. Should not contain null values
-	private static bib = new Bibliography(); //list of books submitted by clients (1 list shared by all server threads)
+	private Map<Field, String> requestContent = new HashMap<Field, String>(5); //used to store content of client request. Values null by default
+	private static Bibliography bib = new Bibliography(); //list of books submitted by clients (1 list shared by all server threads)
 	private Socket socket;
 
 	/*set in setUpConnection*/
@@ -38,12 +38,12 @@ public class ClientHandler implements Runnable {
 	public ClientHandler(Socket socket) {
 		this.socket = socket;
 
-		//intialize requestContent keys, set values to empty string (other code expects no null values)
-		requestContent.put(Field.ISBN, "");
-		requestContent.put(Field.TITLE, "");
-		requestContent.put(Field.AUTHOR, "");
-		requestContent.put(Field.YEAR, "");
-		requestContent.put(Field.PUBLISHER, "");
+		//intialize requestContent keys, set values to null
+		requestContent.put(Field.ISBN, null);
+		requestContent.put(Field.TITLE, null);
+		requestContent.put(Field.AUTHOR, null);
+		requestContent.put(Field.YEAR, null);
+		requestContent.put(Field.PUBLISHER, null);
 	}
 
 	@Override
@@ -51,14 +51,25 @@ public class ClientHandler implements Runnable {
 		try {
 			setUpConnection();
 			processRequests();
-		} catch (Exception generalException) {
+		} catch (RequestException reqException) {
+			try {
+				sendMsg(reqException.getMessage());
+			} 
+			//bad connection, print error to console
+			catch (Exception connectionException) {
+				System.out.print(connectionException.getMessage());
+				connectionException.printStackTrace();
+			}
+		}
+		catch (Exception generalException) {
 			//try to send error to client
 			try {
 				sendException(generalException);
 			}
 			//bad connection, print error to console
 			catch (Exception connectionException) {
-				System.out.print(connectionException.getMessage());
+				System.out.println("Unable to send exception to client on port " + socket.getLocalPort());
+				System.out.println(connectionException.getMessage());
 				connectionException.printStackTrace();
 			}
 		}		
@@ -72,7 +83,7 @@ public class ClientHandler implements Runnable {
 
 		return;
 	}
-	
+
 	/*
 	 * NEED TO ADD HANDLING IF CLIENT CLOSES CONNECTION
 	 * NEED TO CHECK WHAT BUFFEREDREADER.READY() RETURNS IF CONNECTION CLOSED
@@ -81,8 +92,8 @@ public class ClientHandler implements Runnable {
 	private void processRequests() throws RequestException, IOException {
 		String requestType; //first line of request, expected to be one of SUBMIT, UPDATE, GET, REMOVE
 		String contentLine; //line of request content
-		boolean isAll; //used to track if ALL option in request
-		String[] response; //each element is a line to send in response
+		boolean isAll = false; //used to track if ALL option in request
+		List<String> response = null; //each element is a line to send in response
 
 		sendMsg("SUCCESS: Conection accepted\n");
 
@@ -105,23 +116,16 @@ public class ClientHandler implements Runnable {
 			//and validate isbn, if given
 			else {
 				handleRequestLine(contentLine);
-				
+
 				contentLine = readLine();
-				
+
 				//get remaining request content
 				while (contentLine.length() != 0) {
 					handleRequestLine(contentLine);
 					contentLine = readLine();
 				}
-				
-				//validate ISBN, if given
-				if (!requestContent.get(Field.ISBN).equals("")) {
-					if (!validIsbn(requestContent.get(Field.ISBN))) {
-						throw new RequestException("ERROR: Invalid ISBN");
-					}
-				}
 			}
-			
+
 			switch (requestType.toUpperCase()) {
 			case "SUBMIT":
 				response = bib.add(requestContent);
@@ -133,28 +137,39 @@ public class ClientHandler implements Runnable {
 				response = isAll ? bib.getAll() : bib.get(requestContent);
 				break;
 			case "REMOVE":
-				response = isAll ? bib.removeAll() : bib.remove(requestContent);
+				response = isAll ? bib.getAll() : bib.get(requestContent);
+				sendMsg("Please confirm the removal of " + response.size() + " record(s) (Y/N)");
+				contentLine = readLine();
+
+				if (contentLine.toUpperCase().equals("Y")) {
+					response = isAll ? bib.removeAll() : bib.remove(requestContent);
+				} else if (contentLine.toUpperCase().equals("Y")) {
+					response = Arrays.asList("SUCCESS: Remove cancelled");
+				} else {
+					throw new RequestException("ERROR: Invalid Request");
+				}
+
 				break;
 			case "CLOSE":
-				terminate();
+				closeConnection();
 				break;
 			default:
 				throw new RequestException("ERROR: Invalid operation " + requestType);
 			}
-			
+
 			sendMsg(response);
+
 			//clear request content
 			requestContent.replaceAll((k,v) -> "");
 		}
-
 	}
 
 	private String readLine() throws RequestException, IOException {
 		long start = System.nanoTime();
 
 		while (!bufferedReader.ready()) { 
-			if (System.nanoTime() - start > 2E9) {
-				throw new RequestException("ERROR: Request timed-out after 2 seconds");
+			if (System.nanoTime() - start > 5E9) {
+				throw new RequestException("ERROR: Request timed-out after 5 seconds");
 			}
 		}
 
@@ -164,7 +179,7 @@ public class ClientHandler implements Runnable {
 	private void handleRequestLine(String contentLine) throws RequestException {
 		Field field; //field from contentLineSplit[0]		
 		String[] contentLineSplit; //line of request content split at first space, expected first element like one of Field type, second element value of field
-		
+
 		contentLineSplit = contentLine.split(" ", 1); //split by first space, first element is Field, 2nd field value
 
 		//try to convert given field string into Field type
@@ -172,7 +187,7 @@ public class ClientHandler implements Runnable {
 			field = Field.valueOf(contentLineSplit[0].trim());
 		}
 		catch (java.lang.IllegalArgumentException e) {
-			throw new RequestException("ERROR: Invalid field " + contentLineSplit[0], e);
+			throw new RequestException("ERROR: Invalid field " + contentLineSplit[0]);
 		}
 
 		//check to make sure value given for field
@@ -182,7 +197,16 @@ public class ClientHandler implements Runnable {
 
 		//store value for field
 		requestContent.replace(field, contentLineSplit[1]);
-		
+
+		return;
+	}
+
+	private void closeConnection() throws IOException {
+		//close streams and socket
+		outputStream.close();
+		bufferedReader.close();
+		socket.close();
+
 		return;
 	}
 
@@ -190,8 +214,18 @@ public class ClientHandler implements Runnable {
 
 	}
 
-	private void sendMsg(String msg) {
+	private void sendMsg(String msg) throws IOException {
+		outputStream.writeBytes(msg);
 
+		return;
+	}
+
+	private void sendMsg(List<String> msg) throws IOException {
+		for (String line : msg) {
+			sendMsg(line);
+		}
+
+		return;
 	}
 
 }
