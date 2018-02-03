@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +64,6 @@ public class ClientHandler implements Runnable {
 	//run processRequests and handle and exceptions
 	private void controller() {
 		try {
-
 			processRequests();
 			return; //if exited because client said to
 		} catch (RequestException reqException) {
@@ -111,25 +111,38 @@ public class ClientHandler implements Runnable {
 
 	//process client requests until client closes connection
 	private void processRequests() throws RequestException, IOException {
+		String line;
 		String requestType; //first line of request, expected to be one of SUBMIT, UPDATE, GET, REMOVE
 		String contentLine; //line of request content
+		List<String> content = new ArrayList<String>(); //list of lines sent by client
 		boolean isAll = false; //used to track if ALL option in request
 		List<String> response = null; //each element is a line to send in response
+		
+		//recreating this each time in the hope that it helps buffer issues
+		bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 		//endless loop to process requests
-		while (true) {
-			requestType = readLine();
+		while (true) {		
+			requestContent.replaceAll((k,v) -> null);
+			content.clear();			
 			
-			//System.out.println("req: " + requestType);
+			for (line = readLine(); !line.isEmpty(); line = readLine()) {
+				content.add(line);
+			}
+			content.add(line);
+			
+			if (content.size() == 1) {
+				throw new RequestException("ERROR: Invalid request");
+			}
+			
+			requestType = content.get(0);
 
 			//get first line of request content
-			contentLine = readLine();
-			
-			//System.out.println("content1: " + contentLine + ".");
+			contentLine = content.get(1);
 
 			if (contentLine.toUpperCase().equals("ALL")) {
 				//check to make sure nothing else in request, else invalid request
-				if (!readLine().isEmpty()) {
+				if (content.size() > 3) {
 					throw new RequestException("ERROR: Invalid request");
 				}
 
@@ -139,15 +152,12 @@ public class ClientHandler implements Runnable {
 			//and validate isbn, if given
 			else if (!contentLine.isEmpty()) {
 				handleRequestLine(contentLine);
-
-				contentLine = readLine();
-
-				//get remaining request content
-				while (!contentLine.isEmpty()) {
-					handleRequestLine(contentLine);
-					contentLine = readLine();
+				
+				for (int i = 2; i < content.size()-1; i++) {
+					handleRequestLine(content.get(i));
 				}
 			}
+			
 
 			switch (requestType.toUpperCase()) {
 			case "SUBMIT":
@@ -163,15 +173,16 @@ public class ClientHandler implements Runnable {
 				response = isAll ? bib.getAll() : bib.get(requestContent);
 				sendMsg("Please confirm the removal of " + response.size() + " record(s) (Y/N)");
 				contentLine = readLine();
+				readLine(); //clear emptyline
 
 				if (contentLine.toUpperCase().equals("Y")) {
 					response = isAll ? bib.removeAll() : bib.remove(requestContent);
-				} else if (contentLine.toUpperCase().equals("Y")) {
-					response = Arrays.asList("SUCCESS: Remove cancelled");
+				} else if (contentLine.toUpperCase().equals("N")) {
+					response = Arrays.asList("SUCCESS: Remove cancelled\n\n");
 				} else {
-					throw new RequestException("ERROR: Invalid Request");
+					throw new RequestException("ERROR: Invalid response");
 				}
-
+				
 				break;
 			case "CLOSE":
 				sendMsg("Closing connection");
@@ -182,9 +193,6 @@ public class ClientHandler implements Runnable {
 			}
 
 			sendMsg(response);
-
-			//clear request content
-			requestContent.replaceAll((k,v) -> "");
 		}
 	}
 
@@ -203,12 +211,10 @@ public class ClientHandler implements Runnable {
 		String[] contentLineSplit; //line of request content split at first space, expected first element like one of Field type, second element value of field
 
 		contentLineSplit = contentLine.split(" ", 2); //split by first space, first element is Field, 2nd field value
-		
-		//System.out.println(contentLineSplit[0]);
 
 		//try to convert given field string into Field type
 		try {
-			field = Field.valueOf(contentLineSplit[0].trim());
+			field = Field.valueOf(contentLineSplit[0].trim().toUpperCase());
 		}
 		catch (java.lang.IllegalArgumentException e) {
 			throw new RequestException("ERROR: Invalid field " + contentLineSplit[0]);
@@ -222,6 +228,12 @@ public class ClientHandler implements Runnable {
 		//store value for field
 		requestContent.replace(field, contentLineSplit[1]);
 
+		return;
+	}
+	
+	private void clearBuffer() throws IOException {
+		for (String line = bufferedReader.readLine(); !line.isEmpty(); line = bufferedReader.readLine());
+		
 		return;
 	}
 

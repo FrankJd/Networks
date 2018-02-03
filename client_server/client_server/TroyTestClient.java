@@ -9,7 +9,7 @@ public class TroyTestClient {
 		BufferedReader in = null;
 
 		try {
-			kkSocket = new Socket(args[0], Integer.valueOf(args[1]));
+			kkSocket = new Socket("127.0.0.1", 8080);
 			out = new PrintWriter(kkSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));
 		} catch (UnknownHostException e) {

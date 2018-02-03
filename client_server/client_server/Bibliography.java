@@ -26,13 +26,13 @@ public class Bibliography {
 	private List<Book> books = new ArrayList<Book>();
 
 	Bibliography() {	}
-	
+
 	//requires unique, valid ISBN
 	public synchronized List<String> add(Map<ClientHandler.Field, String> requestContent) throws RequestException {		
 		Book newBook;
 
 		//if a duplicate ISBN
-		if (books.stream().anyMatch(x -> x.isbn == requestContent.get(ClientHandler.Field.ISBN))) {
+		if (books.stream().anyMatch(x -> x.isbn.equals(requestContent.get(ClientHandler.Field.ISBN)))) {
 			throw new RequestException("ERROR: Duplicate ISBN");
 		}
 
@@ -40,10 +40,10 @@ public class Bibliography {
 		newBook = new Book(requestContent);
 		books.add(newBook);
 
-		return Arrays.asList("SUCCESS: Record added");
+		return Arrays.asList("SUCCESS: Record added\n\n");
 	}
-	
-	//requires ISBN
+
+	//uses ISBN to find book to update according to params
 	public synchronized List<String> update(Map<ClientHandler.Field, String> parameters) throws RequestException {
 		List<Book> specifiedBook;
 
@@ -55,22 +55,24 @@ public class Bibliography {
 			throw new RequestException("ERROR: Missing parameters");
 		}
 
-		specifiedBook = filterBooks(parameters); 
+		specifiedBook = books.stream()
+				.filter(x -> x.isbn.equals(parameters.get(ClientHandler.Field.ISBN)))
+				.collect(Collectors.toList()); 
 
 		if (specifiedBook.size() == 0) {
-			throw new RequestException("ERROR: Matching record not found");
+			throw new RequestException("ERROR: Matching record not found\n");
 		}
 
 		specifiedBook.get(0).update(parameters);
 
-		return Arrays.asList("SUCCESS: Record updated");
+		return Arrays.asList("SUCCESS: Record updated\n\n");
 	}
 
 	public synchronized List<String> get(Map<ClientHandler.Field, String> parameters) throws RequestException {
 		List<Book> specifiedBooks;
 		List<String> response = new ArrayList<String>();
 
-		if (parameters.values().stream().filter(x -> x != null).count() == 1) {
+		if (parameters.values().stream().filter(x -> x != null).count() == 0) {
 			throw new RequestException("ERROR: Missing parameters");
 		}
 
@@ -83,21 +85,31 @@ public class Bibliography {
 		for (Book book : specifiedBooks) {
 			response.add(book.toString() + "\n");
 		}
-		
-		response.set(response.size()-1, response.get(response.size()-1) + "\n");
+
+		if (response.size() == 0) {
+			response.add("ERROR: No matching record(s)\n\n");
+		}
+		else {
+			response.set(response.size()-1, response.get(response.size()-1) + "\n");
+		}
 
 		return response;
 	}
 
 	public synchronized List<String> getAll() {
 		List<String> response = new ArrayList<String>();
-		
+
 		for (Book book : books) {
 			response.add(book.toString() + "\n");
 		}
-		
-		response.set(response.size()-1, response.get(response.size()-1) + "\n");
-		
+
+		if (response.size() == 0) {
+			response.add("ERROR: No matching record(s)\n\n");
+		}
+		else {
+			response.set(response.size()-1, response.get(response.size()-1) + "\n");
+		}
+
 		return response;
 	}
 
@@ -105,49 +117,49 @@ public class Bibliography {
 		Stream<Book> filteredStream = books.stream(); //holds books not filtered out by params
 		int initialCount; //used to check if any records removed
 
-		if (parameters.values().stream().filter(x -> x != null).count() == 1) {
+		if (parameters.values().stream().filter(x -> x != null).count() == 0) {
 			throw new RequestException("ERROR: Missing parameters");
 		}
-		
+
 		initialCount = books.size();
 
 		//filter out given params
 		if (parameters.get(ClientHandler.Field.ISBN) != null) {			
 			filteredStream = filteredStream
-					.filter(x-> x.isbn != parameters.get(ClientHandler.Field.ISBN));
+					.filter(x-> !x.isbn.equals(parameters.get(ClientHandler.Field.ISBN)));
 		}
 		if (parameters.get(ClientHandler.Field.TITLE) != null) {
 			filteredStream = filteredStream
-					.filter(x-> x.title != parameters.get(ClientHandler.Field.TITLE));
+					.filter(x-> !x.title.equals(parameters.get(ClientHandler.Field.TITLE)));
 		}
 		if (parameters.get(ClientHandler.Field.AUTHOR) != null) {
 			filteredStream = filteredStream
-					.filter(x-> x.author != parameters.get(ClientHandler.Field.AUTHOR));
+					.filter(x-> !x.author.equals(parameters.get(ClientHandler.Field.AUTHOR)));
 		}
 		if (parameters.get(ClientHandler.Field.PUBLISHER) != null) {
 			filteredStream = filteredStream
-					.filter(x-> x.publisher != parameters.get(ClientHandler.Field.PUBLISHER));
+					.filter(x-> !x.publisher.equals(parameters.get(ClientHandler.Field.PUBLISHER)));
 		}
 		if (parameters.get(ClientHandler.Field.YEAR) != null) {
 			filteredStream = filteredStream
-					.filter(x-> x.year != parameters.get(ClientHandler.Field.YEAR));
+					.filter(x-> !x.year.equals(parameters.get(ClientHandler.Field.YEAR)));
 		}
 
 		//convert stream back to list
 		books = filteredStream
 				.collect(Collectors.toList()); 
-		
+
 		if (initialCount - books.size() == 0) {
 			throw new RequestException("ERROR: Matching record not found");
 		}
 
-		return Arrays.asList("SUCCESS: Record(s) removed");
+		return Arrays.asList("SUCCESS: Record(s) removed\n\n");
 	}
 
 	public synchronized List<String> removeAll() {
 		books.clear();
-		
-		return Arrays.asList("SUCCESS: Record(s) removed");
+
+		return Arrays.asList("SUCCESS: Record(s) removed\n\n");
 	}
 
 	private List<Book> filterBooks(Map<ClientHandler.Field, String> parameters) throws RequestException {
@@ -157,25 +169,25 @@ public class Bibliography {
 		//filter by given params
 		if (parameters.get(ClientHandler.Field.ISBN) != null) {			
 			filteredStream = filteredStream
-					.filter(x-> x.isbn == parameters.get(ClientHandler.Field.ISBN));
+					.filter(x-> x.isbn.equals(parameters.get(ClientHandler.Field.ISBN)));
 		}
 		if (parameters.get(ClientHandler.Field.TITLE) != null) {
 			filteredStream = filteredStream
-					.filter(x-> x.title == parameters.get(ClientHandler.Field.TITLE));
+					.filter(x-> x.title.equals(parameters.get(ClientHandler.Field.TITLE)));
 		}
 		if (parameters.get(ClientHandler.Field.AUTHOR) != null) {
 			filteredStream = filteredStream
-					.filter(x-> x.author == parameters.get(ClientHandler.Field.AUTHOR));
+					.filter(x-> x.author.equals(parameters.get(ClientHandler.Field.AUTHOR)));
 		}
 		if (parameters.get(ClientHandler.Field.PUBLISHER) != null) {
 			filteredStream = filteredStream
-					.filter(x-> x.publisher == parameters.get(ClientHandler.Field.PUBLISHER));
+					.filter(x-> x.publisher.equals(parameters.get(ClientHandler.Field.PUBLISHER)));
 		}
 		if (parameters.get(ClientHandler.Field.YEAR) != null) {
 			filteredStream = filteredStream
-					.filter(x-> x.year == parameters.get(ClientHandler.Field.YEAR));
+					.filter(x-> x.year.equals(parameters.get(ClientHandler.Field.YEAR)));
 		}
-
+		
 		//convert stream back to list
 		filteredBooks = filteredStream
 				.collect(Collectors.toList());
@@ -194,7 +206,7 @@ public class Bibliography {
 
 	private class Book {
 		private String isbn, title, author, publisher, year;
-		
+
 		//null params set to empty strings
 		//must have valid ISBN
 		Book(Map<ClientHandler.Field, String> parameters) throws RequestException {
@@ -220,7 +232,7 @@ public class Bibliography {
 			publisher = parameters.get(ClientHandler.Field.PUBLISHER);
 			year = parameters.get(ClientHandler.Field.YEAR);
 		}
-		
+
 		//update according to non-null params
 		//doesn't update ISBN
 		private void update(Map<ClientHandler.Field, String> parameters) throws RequestException {		
@@ -248,7 +260,7 @@ public class Bibliography {
 					+ "AUTHOR " + author + "\n"
 					+ "PUBLISHER " + publisher + "\n"
 					+ "YEAR " + year;
-			
+
 			return str;
 		}
 	}
