@@ -124,7 +124,38 @@ public class GUI{
 
 		
 		
-		
+		Submit.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				String s = clientTextarea.getText();
+				c.Submit(s);
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+
+
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+
+			}
+		});
+
 		
 
 		all.addItemListener(new ItemListener() {    
