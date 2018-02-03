@@ -12,7 +12,7 @@ public class t {
 		String[] arr;
 		
 		arr = t.split(" ", 1);
-		System.out.print(arr.;
+		System.out.print(arr);
 		
 
 

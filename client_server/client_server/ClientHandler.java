@@ -4,7 +4,8 @@
  * Group: 08
  * Version: February 4, 2018
  * 
- * Description:
+ * Description: Spawned by Server to handle a client
+ * 	Follows CP372 A1 Protocol RFC
  */
 
 
@@ -20,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 /* Relies on the following files to be in default package:
  * 	RequestException
- * 	Book
- * 	Server
+ *  Bibliography
+ *  IsbnValidator
  */
 
 public class ClientHandler implements Runnable {
@@ -50,29 +51,50 @@ public class ClientHandler implements Runnable {
 	public void run() {
 		try {
 			setUpConnection();
+		} catch (Exception e) {
+			printException(e);
+		}
+
+		controller();
+		
+		System.out.println("Server thread monitoring port " + socket.getPort() + " exiting");
+	}
+	
+	//run processRequests and handle and exceptions
+	private void controller() {
+		try {
+
 			processRequests();
+			return; //if exited because client said to
 		} catch (RequestException reqException) {
 			try {
 				sendMsg(reqException.getMessage());
 			} 
 			//bad connection, print error to console
 			catch (Exception connectionException) {
-				System.out.print(connectionException.getMessage());
-				connectionException.printStackTrace();
+				printException(connectionException);
+				return;
 			}
+		}
+		catch (IOException connectionException) {
+			printException(connectionException);
+			return;
 		}
 		catch (Exception generalException) {
 			//try to send error to client
 			try {
-				sendException(generalException);
+				sendMsg("ERROR: Unknown exception");
+				printException(generalException, "Unknown exception, client notified");
 			}
 			//bad connection, print error to console
 			catch (Exception connectionException) {
-				System.out.println("Unable to send exception to client on port " + socket.getLocalPort());
-				System.out.println(connectionException.getMessage());
-				connectionException.printStackTrace();
+				printException(connectionException);
+				return;
 			}
-		}		
+		}
+		
+		//try to process requests again
+		controller();
 	}
 
 	//sets up buffer and streams
@@ -80,14 +102,13 @@ public class ClientHandler implements Runnable {
 		InputStream is = socket.getInputStream();
 		outputStream = new DataOutputStream(socket.getOutputStream());
 		bufferedReader = new BufferedReader(new InputStreamReader(is));
+		
+		System.out.println("Connection accepted on port " + socket.getPort());
+		sendMsg("SUCCESS: Connection accepted");
 
 		return;
 	}
 
-	/*
-	 * NEED TO ADD HANDLING IF CLIENT CLOSES CONNECTION
-	 * NEED TO CHECK WHAT BUFFEREDREADER.READY() RETURNS IF CONNECTION CLOSED
-	 */
 	//process client requests until client closes connection
 	private void processRequests() throws RequestException, IOException {
 		String requestType; //first line of request, expected to be one of SUBMIT, UPDATE, GET, REMOVE
@@ -95,18 +116,20 @@ public class ClientHandler implements Runnable {
 		boolean isAll = false; //used to track if ALL option in request
 		List<String> response = null; //each element is a line to send in response
 
-		sendMsg("SUCCESS: Conection accepted\n");
-
 		//endless loop to process requests
 		while (true) {
 			requestType = readLine();
+			
+			//System.out.println("req: " + requestType);
 
 			//get first line of request content
 			contentLine = readLine();
+			
+			//System.out.println("content1: " + contentLine + ".");
 
 			if (contentLine.toUpperCase().equals("ALL")) {
 				//check to make sure nothing else in request, else invalid request
-				if (readLine().length() != 0) {
+				if (!readLine().isEmpty()) {
 					throw new RequestException("ERROR: Invalid request");
 				}
 
@@ -114,13 +137,13 @@ public class ClientHandler implements Runnable {
 			}
 			//get all request content
 			//and validate isbn, if given
-			else {
+			else if (!contentLine.isEmpty()) {
 				handleRequestLine(contentLine);
 
 				contentLine = readLine();
 
 				//get remaining request content
-				while (contentLine.length() != 0) {
+				while (!contentLine.isEmpty()) {
 					handleRequestLine(contentLine);
 					contentLine = readLine();
 				}
@@ -151,8 +174,9 @@ public class ClientHandler implements Runnable {
 
 				break;
 			case "CLOSE":
+				sendMsg("Closing connection");
 				closeConnection();
-				break;
+				return;
 			default:
 				throw new RequestException("ERROR: Invalid operation " + requestType);
 			}
@@ -165,22 +189,22 @@ public class ClientHandler implements Runnable {
 	}
 
 	private String readLine() throws RequestException, IOException {
-		long start = System.nanoTime();
+		String line = bufferedReader.readLine();
 
-		while (!bufferedReader.ready()) { 
-			if (System.nanoTime() - start > 5E9) {
-				throw new RequestException("ERROR: Request timed-out after 5 seconds");
-			}
+		if (line == null) {
+			throw new IOException("Connection closed by client unexpectedly");
 		}
 
-		return bufferedReader.readLine().trim();
+		return line.trim();
 	}
 
 	private void handleRequestLine(String contentLine) throws RequestException {
 		Field field; //field from contentLineSplit[0]		
 		String[] contentLineSplit; //line of request content split at first space, expected first element like one of Field type, second element value of field
 
-		contentLineSplit = contentLine.split(" ", 1); //split by first space, first element is Field, 2nd field value
+		contentLineSplit = contentLine.split(" ", 2); //split by first space, first element is Field, 2nd field value
+		
+		//System.out.println(contentLineSplit[0]);
 
 		//try to convert given field string into Field type
 		try {
@@ -210,22 +234,30 @@ public class ClientHandler implements Runnable {
 		return;
 	}
 
-	private void sendException(Exception e) {
-
-	}
-
 	private void sendMsg(String msg) throws IOException {
-		outputStream.writeBytes(msg);
+		outputStream.writeBytes(msg + "\n\n");
 
 		return;
 	}
-
+	
+	//expects that last elements has extra newline to tell client msg terminated
 	private void sendMsg(List<String> msg) throws IOException {
 		for (String line : msg) {
-			sendMsg(line);
+			outputStream.writeBytes(line);
 		}
 
 		return;
 	}
 
+	private void printException(Exception e) {
+		System.out.println("Unable to send exception to client on port " + socket.getPort());
+		System.out.println(e.getMessage());
+		e.printStackTrace();
+	}
+
+	private void printException(Exception e, String msg) {
+		System.out.println(msg);
+		System.out.println(e.getMessage());
+		e.printStackTrace();
+	}
 }

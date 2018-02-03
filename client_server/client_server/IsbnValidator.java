@@ -1,5 +1,6 @@
 /* File: IsbnValidator
  * Author: Troy Nechanicky, nech5860@mylaurier.ca, 150405860
+ * Group: 08
  * Version: February 1, 2018
  * 
  * Description: Contains a function that validates ISBN-13 numbers

@@ -1,8 +1,13 @@
 /* File: Bibliography
  * Author: Troy Nechanicky, nech5860@mylaurier.ca, 150405860
+ * Group: 08
  * Version: February 4, 2018
  * 
- * Description:
+ * Description: A list of Books
+ * 	Methods for adding, updating, removing, and getting Books
+ * 	Only 1 thread allowed to access adding, updating, removing, and getting methods at a time
+ * 		Could be made more efficient by using 2 locks
+ * 	Designed to follow CP372 A1 Protocol RFC
  */
 
 import java.util.ArrayList;
@@ -11,12 +16,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+/* Relies on the following files to be in default package:
+ * 	RequestException
+ * 	Book
+ *  IsbnValidator
+ */
 
 public class Bibliography {
 	private List<Book> books = new ArrayList<Book>();
 
 	Bibliography() {	}
-
+	
+	//requires unique, valid ISBN
 	public synchronized List<String> add(Map<ClientHandler.Field, String> requestContent) throws RequestException {		
 		Book newBook;
 
@@ -31,7 +42,8 @@ public class Bibliography {
 
 		return Arrays.asList("SUCCESS: Record added");
 	}
-
+	
+	//requires ISBN
 	public synchronized List<String> update(Map<ClientHandler.Field, String> parameters) throws RequestException {
 		List<Book> specifiedBook;
 
@@ -71,6 +83,8 @@ public class Bibliography {
 		for (Book book : specifiedBooks) {
 			response.add(book.toString() + "\n");
 		}
+		
+		response.set(response.size()-1, response.get(response.size()-1) + "\n");
 
 		return response;
 	}
@@ -81,6 +95,8 @@ public class Bibliography {
 		for (Book book : books) {
 			response.add(book.toString() + "\n");
 		}
+		
+		response.set(response.size()-1, response.get(response.size()-1) + "\n");
 		
 		return response;
 	}
@@ -178,7 +194,9 @@ public class Bibliography {
 
 	private class Book {
 		private String isbn, title, author, publisher, year;
-
+		
+		//null params set to empty strings
+		//must have valid ISBN
 		Book(Map<ClientHandler.Field, String> parameters) throws RequestException {
 			parameters = replaceNull(parameters);
 
@@ -202,7 +220,9 @@ public class Bibliography {
 			publisher = parameters.get(ClientHandler.Field.PUBLISHER);
 			year = parameters.get(ClientHandler.Field.YEAR);
 		}
-
+		
+		//update according to non-null params
+		//doesn't update ISBN
 		private void update(Map<ClientHandler.Field, String> parameters) throws RequestException {		
 			if (parameters.get(ClientHandler.Field.TITLE) != null) {
 				title = parameters.get(ClientHandler.Field.TITLE);
@@ -233,4 +253,3 @@ public class Bibliography {
 		}
 	}
 }
-
