@@ -1,3 +1,4 @@
+package sfsfd;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -15,11 +16,13 @@ public class Client {
     PrintWriter out = null;
     BufferedReader in = null;
     private ObjectOutputStream output;
-
-	public Client(){
-		
-	}
-	
+    
+    Client() { }
+    
+    public static void main(String args[]) {
+    	new GUI(new Client());
+    }
+    
 	public void Connect(String ip, int port){
 		try{
 			if (port  > reservedPort)
@@ -37,6 +40,22 @@ public class Client {
 			JOptionPane.showMessageDialog(null,  "Couldn't get I/O for the connection" , null, JOptionPane.ERROR_MESSAGE);
 			
 		}
+		
+	}
+	
+	public String sendRequest(String operation, String content) {
+		
+	}
+	
+	public String sendRequestBibtex(String operation, String content) {
+		
+	}
+	
+	private void sendMsg(string msg) {
+		
+	}
+	
+	private String getResponse() {
 		
 	}
 	
