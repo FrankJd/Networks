@@ -1,3 +1,6 @@
+package sfsfd;
+
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -20,72 +23,67 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 
-public class GUI{
-	
-	Client c = new Client();
+public class GUI {
+
+	Client client;
 	JFrame guiClient = new JFrame("Client");
- 
-	public GUI(){
-		
+
+	public GUI(Client c) {
+		client = c;
 		
 		guiClient.setSize (570, 500);
 		guiClient.setResizable(false);
-		
+
 		// GUI Elements 
-		
-		
+
+
 		// Drop box elements
-		
+
 		String[] requestOptions = {"GET","SUBMIT","UPDATE","REMOVE"};
 		JComboBox dropBox = new JComboBox(requestOptions);
-		
+
 		// Labels 
 		JLabel ipLabel = new JLabel("IP:");
 		JLabel portLabel  = new JLabel("Port:");
 		JLabel dropLable = new JLabel("Requests Options:");
 		JLabel cientTextAreaLabel  = new JLabel("Request:"); 
 		JLabel serverTextAreaLable  = new JLabel("Output:");
-		
+
 		// buttons 
 		JButton Submit  = new JButton("Send");
 		Submit.setEnabled(false);
 		JToggleButton toggleButton = new JToggleButton("Connect");
-		
-		
-		
+
 		// check box 
 		JCheckBox all = new JCheckBox("All");
-		JCheckBox bitTex = new JCheckBox("BibTeX"); 
-		
-		
+		JCheckBox bibtex = new JCheckBox("BibTeX"); 
+
 		// text filed 
-		
+
 		JTextField ip = new JTextField(17);
 		JTextField port = new JTextField(17);
-		
-		
+
 		// text area 
-		
+
 		JTextArea clientTextarea = new JTextArea(10, 50);
 		JTextArea serverTextarea = new JTextArea(10, 50);
 		serverTextarea.setEditable(false);
-		
-		
+
+
 		// Panels
-		
-		JPanel comuncasPane = new JPanel();
-		comuncasPane.setLayout(new BoxLayout(comuncasPane,BoxLayout.Y_AXIS));
+
+		JPanel communcasPane = new JPanel();
+		communcasPane.setLayout(new BoxLayout(communcasPane,BoxLayout.Y_AXIS));
 		JPanel ipPanle = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JPanel newIpPanle = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JPanel comuncationsPane = new JPanel();
-		comuncationsPane.setLayout(new BoxLayout(comuncationsPane,BoxLayout.Y_AXIS));
+		JPanel communcationsPane = new JPanel();
+		communcationsPane.setLayout(new BoxLayout(communcationsPane,BoxLayout.Y_AXIS));
 		JPanel ClientPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JPanel SendPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		JPanel ServerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		
-		
+
 		// putting everything together 
-		
+
 		ipPanle.add(portLabel);
 		ipPanle.add(port);
 		ipPanle.add(ipLabel);
@@ -95,115 +93,95 @@ public class GUI{
 		newIpPanle.add(dropBox);
 		newIpPanle.add(Submit);
 		newIpPanle.add(all);
-		newIpPanle.add(bitTex);
+		newIpPanle.add(bibtex);
 		guiClient.setVisible(true);
-		comuncasPane.add(ipPanle);
-		comuncasPane.add(newIpPanle);
+		communcasPane.add(ipPanle);
+		communcasPane.add(newIpPanle);
 
-		
-		
-		guiClient.add(comuncasPane, BorderLayout.NORTH);
-		
+		guiClient.add(communcasPane, BorderLayout.NORTH);
+
 		ClientPanel.add(cientTextAreaLabel);	
-		comuncationsPane.add(ClientPanel);
-		comuncationsPane.add(new JScrollPane(clientTextarea));
-		comuncationsPane.add(SendPanel);
+		communcationsPane.add(ClientPanel);
+		communcationsPane.add(new JScrollPane(clientTextarea));
+		communcationsPane.add(SendPanel);
 		ServerPanel.add(serverTextAreaLable);
-		comuncationsPane.add(ServerPanel);
-		comuncationsPane.add(new JScrollPane(serverTextarea));
+		communcationsPane.add(ServerPanel);
+		communcationsPane.add(new JScrollPane(serverTextarea));
 
-		
-		
-		guiClient.add(comuncationsPane);
+		guiClient.add(communcationsPane);
 		guiClient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		guiClient.setVisible(true);
-		
-		
-	
-		
-		
 
 		// adding actions 
-		
+
 		Submit.addMouseListener(new MouseListener() {
 			@Override
-			public void mouseReleased(MouseEvent e) {
-
-			}
+			public void mouseReleased(MouseEvent e) {}
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+				//SUBMIT/UPDATE/REMOVE/GET-noBibtex
+				//if ALL, insert "ALL\n" at beginning of content
+				response = client.sendRequest(operation, content);
+				
+				//GET - bibtex
+				//if ALL, insert "ALL\n" at beginning of content
+				response = client.sendRequestBibtex(operation, content);
+				
 				String s = clientTextarea.getText();
-				c.Submit(s);
-
+				client.Submit(s);
+				
+				//display response
 			}
 
 			@Override
-			public void mouseExited(MouseEvent e) {
-
-
-
-			}
+			public void mouseExited(MouseEvent e) {	}
 
 			@Override
-			public void mouseEntered(MouseEvent e) {
-
-			}
+			public void mouseEntered(MouseEvent e) {}
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
-
-
-			}
+			public void mouseClicked(MouseEvent e) { }
 		});
 
-		
+
 
 		all.addItemListener(new ItemListener() {    
-            public void itemStateChanged(ItemEvent e) { 
-           	 
-           	 if (e.getStateChange()==1){
-           		clientTextarea.setEditable(false);
-           		 
-           	 }else{
-           		clientTextarea.setEditable(true);
-           		 
-           	 }
-               
-            }    
-         });   
+			public void itemStateChanged(ItemEvent e) { 
 
+				if (e.getStateChange()==1){
+					clientTextarea.setEditable(false);
+
+				} else {
+					clientTextarea.setEditable(true);
+				}
+			}    
+		});   
 
 		ip.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
-
 			}
 
 			@Override
 			public void mousePressed(MouseEvent e) {
 				String s = ip.getText();
 
-				if (s.equals("")){
+				if (s.equals("")) {
 					int n = JOptionPane.showConfirmDialog(
 							guiClient,
 							"If you wish to establis an IP connection to the same machine or computer, you should use  127.0.0.1 as your IP address.\n "
-							+ "Would you like to use 127.0.0.1 as your IP address?",
-							"An Inane Question",
-							JOptionPane.YES_NO_OPTION);
-					if (n == 0){
+									+ "Would you like to use 127.0.0.1 as your IP address?",
+									"An Inane Question",
+									JOptionPane.YES_NO_OPTION);
+					if (n == 0) {
 						ip.setText("127.0.0.1"); 
-
 					}
-
-
 				}
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-
-
 
 			}
 
@@ -218,11 +196,6 @@ public class GUI{
 
 			}
 		});
-
-
-
-
-
 
 		ActionListener actionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -231,13 +204,9 @@ public class GUI{
 
 				AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
 				boolean selected = abstractButton.getModel().isSelected();
-				
+
 				if (selected == true){
-
-				
-
-					if (port_b.isEmpty() && ip_b.isEmpty()){
-
+					if (port_b.isEmpty() && ip_b.isEmpty()) {
 
 						String s = (String)JOptionPane.showInputDialog(
 								guiClient,
@@ -259,22 +228,17 @@ public class GUI{
 								"");
 						port.setText(r);
 						port_b = port.getText();
-						
-						
-					
-						if (!port_b.isEmpty() && !ip_b.isEmpty()){
-							int result = Integer.parseInt(port_b);
-							
-							toggleButton.setText("Disconnect");
-							c.Connect(ip_b, result);
-							Submit.setEnabled(true);
-							
-							}else{
-								JOptionPane.showMessageDialog(null,  "must establish a Port number and IP address" , null, JOptionPane.ERROR_MESSAGE);
-							}
-						
 
-					}else if(port_b.isEmpty()){
+						if (!port_b.isEmpty() && !ip_b.isEmpty()) {
+							int result = Integer.parseInt(port_b);
+
+							toggleButton.setText("Disconnect");
+							client.Connect(ip_b, result);
+							Submit.setEnabled(true);
+						} else{
+							JOptionPane.showMessageDialog(null,  "must establish a Port number and IP address" , null, JOptionPane.ERROR_MESSAGE);
+						}
+					} else if(port_b.isEmpty()){
 						String r = (String)JOptionPane.showInputDialog(
 								guiClient,
 								"please enter a port number",
@@ -286,19 +250,14 @@ public class GUI{
 						port.setText(r);
 						port_b = port.getText();
 						if (!port_b.isEmpty()){
-							
-							
 							int result = Integer.parseInt(port_b);
 							toggleButton.setText("Disconnect");
-							c.Connect(ip_b, result);
+							client.Connect(ip_b, result);
 							Submit.setEnabled(true);
-							
-							}else{
-								JOptionPane.showMessageDialog(null,  "must establish a Port number" , null, JOptionPane.ERROR_MESSAGE);
-							}
-
-
-					}else if(ip_b.isEmpty()){
+						} else {
+							JOptionPane.showMessageDialog(null,  "must establish a Port number" , null, JOptionPane.ERROR_MESSAGE);
+						}
+					} else if(ip_b.isEmpty()) {
 						String s = (String)JOptionPane.showInputDialog(
 								guiClient,
 								"please enter a IP number",
@@ -309,121 +268,61 @@ public class GUI{
 								"127.0.0.1");
 						ip.setText(s);
 						ip_b = ip.getText();
-						if (!ip_b.isEmpty()){
-						toggleButton.setText("Disconnect");		
-						int result = Integer.parseInt(port_b);
-						c.Connect(ip_b, result);
-							
-						Submit.setEnabled(true);
-					
-						}else{
+						if (!ip_b.isEmpty()) {
+							toggleButton.setText("Disconnect");		
+							int result = Integer.parseInt(port_b);
+							client.Connect(ip_b, result);
+
+							Submit.setEnabled(true);
+
+						} else{
 							JOptionPane.showMessageDialog(null,  "must establish an IP number" , null, JOptionPane.ERROR_MESSAGE);
 						}
 
-					}else{
-						
-						
+					} else{
+
 						int result = Integer.parseInt(port_b);
-						
-						
+
 						Submit.setEnabled(true);
 						toggleButton.setText("Disconnect");
-						
-						c.Connect(ip_b, result);
+
+						client.Connect(ip_b, result);
 					}
-				}else{
+				} else{
 					toggleButton.setText("Conect");
-				
+
 					Submit.setEnabled(false);
-					c.closeConnection();	
-
+					client.closeConnection();	
 				}
-
-
-
-
-
-
 			}
-
-
-
-
-
-
-
-
-
 		};
-
 
 		toggleButton.addActionListener(actionListener);
 
-
-
 		ActionListener  x = new ActionListener() {
-			
+
 			@SuppressWarnings("deprecation")
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String s = (String) dropBox.getSelectedItem();
-				
-				
-				
-			
-					if (s.equals("GET")){
-						all.setVisible(true);
-						bitTex.setVisible(true);
-						
-					}else if(s.equals("REMOVE")){
-						all.setVisible(true);
-						bitTex.hide();
-						
-					}else if(s.equals("UPDATE")){
-						all.hide();
-						bitTex.hide();
-						
-						
-					}else if (s.equals("SUBMIT")) {
-						
-						all.hide();
-						bitTex.hide();
-						
-					}
-				
-						
-						
-						
-					}
-					
-					
-					
 
-				
-				
-				
+				if (s.equals("GET")){
+					all.setVisible(true);
+					bibtex.setVisible(true);
+				}else if(s.equals("REMOVE")){
+					all.setVisible(true);
+					bibtex.hide();
+				}else if(s.equals("UPDATE")){
+					all.hide();
+					bibtex.hide();						
+				}else if (s.equals("SUBMIT")) {
+					all.hide();
+					bibtex.hide();
+				}	
+			}
 
-				
-		
-		
 		};
 		
-		
-	
 		dropBox.addActionListener(x);
-		
-		
-	
-
-
-	
-
-
 	}
-	public static void main(String args[]){
-		GUI x = new GUI();	
-
-
-	}
-
 }
