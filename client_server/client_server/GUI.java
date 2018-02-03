@@ -1,3 +1,4 @@
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -20,11 +21,13 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 
-public class Client{
+public class GUI{
+	
+	Client c = new Client();
 
 	JFrame guiClient = new JFrame("Client");
 	// Creating constructor. 
-	public Client(){
+	public GUI(){
 		// Setting up the Fixed Frame size to 600,750.
 		//guiClient.pack();
 		guiClient.setSize (570, 500);
@@ -196,13 +199,12 @@ public class Client{
 
 				AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
 				boolean selected = abstractButton.getModel().isSelected();
-
+				
 				if (selected == true){
 
-
+				
 
 					if (port_b.isEmpty() && ip_b.isEmpty()){
-
 
 
 						String s = (String)JOptionPane.showInputDialog(
@@ -229,8 +231,12 @@ public class Client{
 						
 					
 						if (!port_b.isEmpty() && !ip_b.isEmpty()){
-							Submit.setEnabled(true);
+							int result = Integer.parseInt(port_b);
+							
 							toggleButton.setText("Disconnect");
+							c.Connect(ip_b, result);
+							Submit.setEnabled(true);
+							
 							}else{
 								JOptionPane.showMessageDialog(null,  "must establish a Port number and IP address" , null, JOptionPane.ERROR_MESSAGE);
 							}
@@ -248,8 +254,13 @@ public class Client{
 						port.setText(r);
 						port_b = port.getText();
 						if (!port_b.isEmpty()){
-							Submit.setEnabled(true);
+							
+							
+							int result = Integer.parseInt(port_b);
 							toggleButton.setText("Disconnect");
+							c.Connect(ip_b, result);
+							Submit.setEnabled(true);
+							
 							}else{
 								JOptionPane.showMessageDialog(null,  "must establish a Port number" , null, JOptionPane.ERROR_MESSAGE);
 							}
@@ -267,19 +278,32 @@ public class Client{
 						ip.setText(s);
 						ip_b = ip.getText();
 						if (!ip_b.isEmpty()){
+						toggleButton.setText("Disconnect");		
+						int result = Integer.parseInt(port_b);
+						c.Connect(ip_b, result);
+							
 						Submit.setEnabled(true);
-						toggleButton.setText("Disconnect");
+					
 						}else{
 							JOptionPane.showMessageDialog(null,  "must establish an IP number" , null, JOptionPane.ERROR_MESSAGE);
 						}
 
 					}else{
+						
+						
+						int result = Integer.parseInt(port_b);
+						
+						
 						Submit.setEnabled(true);
 						toggleButton.setText("Disconnect");
+						
+						c.Connect(ip_b, result);
 					}
 				}else{
-					Submit.setEnabled(false);
 					toggleButton.setText("Conect");
+				
+					Submit.setEnabled(false);
+					c.closeConnection();	
 
 				}
 
@@ -420,7 +444,7 @@ public class Client{
 
 	}
 	public static void main(String args[]){
-		Client x = new Client();	
+		GUI x = new GUI();	
 
 
 	}
