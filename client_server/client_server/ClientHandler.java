@@ -125,8 +125,9 @@ public class ClientHandler implements Runnable {
 		while (true) {		
 			requestContent.replaceAll((k,v) -> null);
 			content.clear();			
-			
+			//System.out.println("firstread");
 			for (line = readLine(); !line.isEmpty(); line = readLine()) {
+				//System.out.println("read: " + line);
 				content.add(line);
 			}
 			content.add(line);
@@ -136,6 +137,8 @@ public class ClientHandler implements Runnable {
 			}
 			
 			requestType = content.get(0);
+			
+			//System.out.println("req: " + requestType);
 
 			//get first line of request content
 			contentLine = content.get(1);
@@ -197,8 +200,10 @@ public class ClientHandler implements Runnable {
 	}
 
 	private String readLine() throws RequestException, IOException {
+		//System.out.println("trying to read");
 		String line = bufferedReader.readLine();
-
+		//System.out.println("red: " + line);
+		
 		if (line == null) {
 			throw new IOException("Connection closed by client unexpectedly");
 		}
@@ -231,12 +236,6 @@ public class ClientHandler implements Runnable {
 		return;
 	}
 	
-	private void clearBuffer() throws IOException {
-		for (String line = bufferedReader.readLine(); !line.isEmpty(); line = bufferedReader.readLine());
-		
-		return;
-	}
-
 	private void closeConnection() throws IOException {
 		//close streams and socket
 		outputStream.close();

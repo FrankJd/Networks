@@ -1,349 +1,187 @@
-package sfsfd;
+/*
+ * File: Client
+ * Author: Troy Nechanicky, nech5860, 150405860 
+ * 	Frank Khalil, khal6600, 160226600
+ * Group: 08
+ * Version: February 4, 2018
+ * 
+ * Description: Interface between GUI and server
+ * 	Follows CP372 A1 Protocol RFC
+ */
 
-
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.ConnectException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+/* Relies on the following files to be in default package:
+ * 	GUI
+ * 	IsbnValidator
+ */
 
 import javax.swing.JOptionPane;
-import javax.swing.AbstractButton;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
 
-public class GUI {
+public class Client {
+	final int reservedPort = 1023; 
+	Socket socket;
+	DataOutputStream out;
+	BufferedReader in;
 
-	Client client;
-	JFrame guiClient = new JFrame("Client");
+	Client() { }
 
-	public GUI(Client c) {
-		client = c;
-		
-		guiClient.setSize (570, 500);
-		guiClient.setResizable(false);
-
-		// GUI Elements 
-
-
-		// Drop box elements
-
-		String[] requestOptions = {"GET","SUBMIT","UPDATE","REMOVE"};
-		JComboBox dropBox = new JComboBox(requestOptions);
-
-		// Labels 
-		JLabel ipLabel = new JLabel("IP:");
-		JLabel portLabel  = new JLabel("Port:");
-		JLabel dropLable = new JLabel("Requests Options:");
-		JLabel cientTextAreaLabel  = new JLabel("Request:"); 
-		JLabel serverTextAreaLable  = new JLabel("Output:");
-
-		// buttons 
-		JButton Submit  = new JButton("Send");
-		Submit.setEnabled(false);
-		JToggleButton toggleButton = new JToggleButton("Connect");
-
-		// check box 
-		JCheckBox all = new JCheckBox("All");
-		JCheckBox bibtex = new JCheckBox("BibTeX"); 
-
-		// text filed 
-
-		JTextField ip = new JTextField(17);
-		JTextField port = new JTextField(17);
-
-		// text area 
-
-		JTextArea clientTextarea = new JTextArea(10, 50);
-		JTextArea serverTextarea = new JTextArea(10, 50);
-		serverTextarea.setEditable(false);
-
-
-		// Panels
-
-		JPanel communcasPane = new JPanel();
-		communcasPane.setLayout(new BoxLayout(communcasPane,BoxLayout.Y_AXIS));
-		JPanel ipPanle = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JPanel newIpPanle = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JPanel communcationsPane = new JPanel();
-		communcationsPane.setLayout(new BoxLayout(communcationsPane,BoxLayout.Y_AXIS));
-		JPanel ClientPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JPanel SendPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		JPanel ServerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-
-		// putting everything together 
-
-		ipPanle.add(portLabel);
-		ipPanle.add(port);
-		ipPanle.add(ipLabel);
-		ipPanle.add(ip);
-		ipPanle.add(toggleButton);
-		newIpPanle.add(dropLable);
-		newIpPanle.add(dropBox);
-		newIpPanle.add(Submit);
-		newIpPanle.add(all);
-		newIpPanle.add(bibtex);
-		guiClient.setVisible(true);
-		communcasPane.add(ipPanle);
-		communcasPane.add(newIpPanle);
-
-		guiClient.add(communcasPane, BorderLayout.NORTH);
-
-		ClientPanel.add(cientTextAreaLabel);	
-		communcationsPane.add(ClientPanel);
-		communcationsPane.add(new JScrollPane(clientTextarea));
-		communcationsPane.add(SendPanel);
-		ServerPanel.add(serverTextAreaLable);
-		communcationsPane.add(ServerPanel);
-		communcationsPane.add(new JScrollPane(serverTextarea));
-
-		guiClient.add(communcationsPane);
-		guiClient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		guiClient.setVisible(true);
-
-		// adding actions 
-
-		Submit.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseReleased(MouseEvent e) {}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				//SUBMIT/UPDATE/REMOVE/GET-noBibtex
-				//if ALL, insert "ALL\n" at beginning of content
-				
-				String operation = (String) dropBox.getSelectedItem();
-				String content = clientTextarea.getText();
-			
-				try {
-					String response = client.sendRequest(operation, content);
-					serverTextarea.append("\n"+response+"\n");
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (RequestException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				
-				
-				
-				/*	
-				//GET - bibtex
-				//if ALL, insert "ALL\n" at beginning of content
-				response = client.sendRequestBibtex(operation, content);
-				
-				String s = clientTextarea.getText();
-				client.Submit(s);
-				
-				
-				*/
-				//display response
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {	}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {}
-
-			@Override
-			public void mouseClicked(MouseEvent e) { }
-		});
-
-
-
-		all.addItemListener(new ItemListener() {    
-			public void itemStateChanged(ItemEvent e) { 
-
-				if (e.getStateChange()==1){
-					clientTextarea.setEditable(false);
-
-				} else {
-					clientTextarea.setEditable(true);
-				}
-			}    
-		});   
-
-		ip.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseReleased(MouseEvent e) {
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				String s = ip.getText();
-
-				if (s.equals("")) {
-					int n = JOptionPane.showConfirmDialog(
-							guiClient,
-							"If you wish to establis an IP connection to the same machine or computer, you should use  127.0.0.1 as your IP address.\n "
-									+ "Would you like to use 127.0.0.1 as your IP address?",
-									"An Inane Question",
-									JOptionPane.YES_NO_OPTION);
-					if (n == 0) {
-						ip.setText("127.0.0.1"); 
-					}
-				}
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-
-
-			}
-		});
-
-		ActionListener actionListener = new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				String port_b = port.getText(); 
-				String ip_b = ip.getText();
-
-				AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
-				boolean selected = abstractButton.getModel().isSelected();
-
-				if (selected == true){
-					if (port_b.isEmpty() && ip_b.isEmpty()) {
-
-						String s = (String)JOptionPane.showInputDialog(
-								guiClient,
-								"please enter a IP number",
-								"Customized Dialog",
-								JOptionPane.PLAIN_MESSAGE,
-								null,
-								null,
-								"127.0.0.1");
-						ip.setText(s);
-						ip_b = ip.getText();
-						String r = (String)JOptionPane.showInputDialog(
-								guiClient,
-								"please enter a port number",
-								"Customized Dialog",
-								JOptionPane.PLAIN_MESSAGE,
-								null,
-								null,
-								"");
-						port.setText(r);
-						port_b = port.getText();
-
-						if (!port_b.isEmpty() && !ip_b.isEmpty()) {
-							int result = Integer.parseInt(port_b);
-
-							toggleButton.setText("Disconnect");
-							client.Connect(ip_b, result);
-							Submit.setEnabled(true);
-						} else{
-							JOptionPane.showMessageDialog(null,  "must establish a Port number and IP address" , null, JOptionPane.ERROR_MESSAGE);
-						}
-					} else if(port_b.isEmpty()){
-						String r = (String)JOptionPane.showInputDialog(
-								guiClient,
-								"please enter a port number",
-								"Customized Dialog",
-								JOptionPane.PLAIN_MESSAGE,
-								null,
-								null,
-								"");
-						port.setText(r);
-						port_b = port.getText();
-						if (!port_b.isEmpty()){
-							int result = Integer.parseInt(port_b);
-							toggleButton.setText("Disconnect");
-							client.Connect(ip_b, result);
-							Submit.setEnabled(true);
-						} else {
-							JOptionPane.showMessageDialog(null,  "must establish a Port number" , null, JOptionPane.ERROR_MESSAGE);
-						}
-					} else if(ip_b.isEmpty()) {
-						String s = (String)JOptionPane.showInputDialog(
-								guiClient,
-								"please enter a IP number",
-								"Customized Dialog",
-								JOptionPane.PLAIN_MESSAGE,
-								null,
-								null,
-								"127.0.0.1");
-						ip.setText(s);
-						ip_b = ip.getText();
-						if (!ip_b.isEmpty()) {
-							toggleButton.setText("Disconnect");		
-							int result = Integer.parseInt(port_b);
-							client.Connect(ip_b, result);
-
-							Submit.setEnabled(true);
-
-						} else{
-							JOptionPane.showMessageDialog(null,  "must establish an IP number" , null, JOptionPane.ERROR_MESSAGE);
-						}
-
-					} else{
-
-						int result = Integer.parseInt(port_b);
-
-						Submit.setEnabled(true);
-						toggleButton.setText("Disconnect");
-
-						client.Connect(ip_b, result);
-					}
-				} else{
-					toggleButton.setText("Conect");
-
-					Submit.setEnabled(false);
-					client.closeConnection();	
-				}
-			}
-		};
-
-		toggleButton.addActionListener(actionListener);
-
-		ActionListener  x = new ActionListener() {
-
-			@SuppressWarnings("deprecation")
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String s = (String) dropBox.getSelectedItem();
-
-				if (s.equals("GET")){
-					all.setVisible(true);
-					bibtex.setVisible(true);
-				}else if(s.equals("REMOVE")){
-					all.setVisible(true);
-					bibtex.hide();
-				}else if(s.equals("UPDATE")){
-					all.hide();
-					bibtex.hide();						
-				}else if (s.equals("SUBMIT")) {
-					all.hide();
-					bibtex.hide();
-				}	
-			}
-
-		};
-		
-		dropBox.addActionListener(x);
+	public static void main(String args[]) {
+		new GUI(new Client());
 	}
+
+	public String Connect(String ip, int port){
+		try {
+			if (port > reservedPort) {
+				socket = new Socket(ip, port);
+				InputStream is = socket.getInputStream();
+				out = new DataOutputStream(socket.getOutputStream());
+				in = new BufferedReader(new InputStreamReader(is));
+				out.writeBytes("GET\n\n");
+				return getResponse();
+			}
+			else {
+				JOptionPane.showMessageDialog(null,  "Port numbers between 0 and 1,023 are reserved for privileged users" , null, JOptionPane.ERROR_MESSAGE);
+			}
+		} catch (ConnectException e){
+			JOptionPane.showMessageDialog(null,  "No server available" , null, JOptionPane.ERROR_MESSAGE);
+
+		} catch(UnknownHostException e){
+			JOptionPane.showMessageDialog(null,  "Unknown Host" , null, JOptionPane.ERROR_MESSAGE);
+
+		} catch(IOException e){
+			JOptionPane.showMessageDialog(null,  "Couldn't get I/O for the connection" , null, JOptionPane.ERROR_MESSAGE);
+		}
+
+		return "";
+	}
+
+	public String sendRequest(String operation, String content) {
+		String response = "";
+		int isbnIndex, endIndex;
+		boolean validIsbn;
+
+		isbnIndex = content.toUpperCase().indexOf("ISBN");
+	//	System.out.println("sending");
+
+		if (isbnIndex != -1) {
+			endIndex = content.indexOf('\n', isbnIndex);
+			validIsbn = IsbnValidator.validIsbn(content.substring(isbnIndex, endIndex));
+			if (!validIsbn) {
+				response = "ERROR: Invalid ISBN";
+				return response;
+			}
+		}
+		content = content.trim();
+		if (content.length() == 0) {
+			return "ERROR: Invalid request";
+		}
+		content = operation + "\n" + content + "\n";
+		//out.print(content);
+		try {
+			out.writeBytes(content);
+		} catch (IOException e) {
+			return "ERROR: Connection closed by client unexpectedly";
+		}
+		//System.out.println("cont: " + content);
+		
+		//System.out.println("getting r");
+		response = getResponse();
+		
+		//System.out.println("Response: " + response);
+
+		return response;
+	}
+
+	public String sendRequestBibtex(String operation, String content) {
+		String response = "";
+
+		content = content.trim();
+		content = operation + "\n" + content + "\n\n";
+		//System.out.println("hi");
+		try {
+			out.writeBytes(content);
+		} catch (IOException e) {
+			return "ERROR: Connection closed by client unexpectedly";
+		}
+
+		response = getResponse();
+
+		return getBibtex(response);
+	}
+
+	private String getResponse() {
+		String response = "", line;
+
+		try {
+			for (line = in.readLine(); line != null && !line.isEmpty(); line = in.readLine()) {		
+			//	System.out.println("client: " + line);
+				response += line;
+			}
+			if (line == null) {
+				response = "ERROR: Connection closed by server unexpectedly";
+			}
+		} catch (IOException e) {
+			response = "ERROR: Connection closed by server unexpectedly";
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return response;
+	}
+
+	private static String getBibtex(String response) {
+		List<String> lines = new ArrayList<String>(Arrays.asList(response.split("\n")));
+		String bibtex = "";
+
+		for (int i = 0; i < lines.size(); i += 5) {
+			bibtex = bibtex
+					+ "@book{" + getKey(lines.subList(i, i + 5)) + ",\n"
+					+ getBibtexLine(lines.get(i)) + ",\n"
+					+ getBibtexLine(lines.get(i+1)) + ",\n"
+					+ getBibtexLine(lines.get(i+2)) + ",\n"
+					+ getBibtexLine(lines.get(i+3)) + ",\n"
+					+ getBibtexLine(lines.get(i+4)) + "\n"
+					+ "}\n";
+		}
+
+		return bibtex;
+	}
+
+	private static String getBibtexLine(String line) {	
+		String[] splitLine = line.split(" ", 2);
+
+		return splitLine[0].toLowerCase() + "={" + splitLine[1] + "}";
+	}
+
+	private static String getKey(List<String> lines) {
+		int commaIndex = lines.get(2).substring(6).indexOf(',');
+		if (commaIndex == -1) commaIndex = lines.get(2).length();	
+		String lastName = lines.get(2).substring(7, commaIndex);
+		lastName = String.format("%-4.4s", lastName).replace(' ', 'x');
+
+		String year = String.format("%-4.4s", lines.get(4).substring(5)).replace(' ', 'x');
+
+		return lastName + year;
+	}
+
+	public void closeConnection() throws IOException {
+		//close streams and socket
+		out.close();
+		in.close();
+		socket.close();
+
+		return;
+	}
+
 }
