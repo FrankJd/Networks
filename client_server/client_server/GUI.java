@@ -9,6 +9,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
+
 import javax.swing.JOptionPane;
 import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
@@ -122,8 +124,25 @@ public class GUI {
 			public void mousePressed(MouseEvent e) {
 				//SUBMIT/UPDATE/REMOVE/GET-noBibtex
 				//if ALL, insert "ALL\n" at beginning of content
-				response = client.sendRequest(operation, content);
 				
+				String operation = (String) dropBox.getSelectedItem();
+				String content = clientTextarea.getText();
+			
+				try {
+					String response = client.sendRequest(operation, content);
+					serverTextarea.append("\n"+response+"\n");
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (RequestException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				
+				
+				
+				/*	
 				//GET - bibtex
 				//if ALL, insert "ALL\n" at beginning of content
 				response = client.sendRequestBibtex(operation, content);
@@ -131,6 +150,8 @@ public class GUI {
 				String s = clientTextarea.getText();
 				client.Submit(s);
 				
+				
+				*/
 				//display response
 			}
 
