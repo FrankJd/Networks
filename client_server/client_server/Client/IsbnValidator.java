@@ -9,7 +9,7 @@
 public class IsbnValidator {
 	public static boolean validIsbn(String isbn) {
 		int total = 0, checksum, digit;
-
+			
 		//remove any hyphens
 		isbn = isbn.replaceAll("-", "");
 

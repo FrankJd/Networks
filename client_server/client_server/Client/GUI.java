@@ -1,5 +1,5 @@
 /*
- * File: Client
+ * File: GUI
  * Author: Troy Nechanicky, nech5860, 150405860 
  * 	Frank Khalil, khal6600, 160226600
  * Group: 08
@@ -50,7 +50,7 @@ public class GUI {
 
 		// Drop box elements
 		String[] requestOptions = {"GET","SUBMIT","UPDATE","REMOVE"};
-		JComboBox dropBox = new JComboBox(requestOptions);
+		JComboBox<String> dropBox = new JComboBox<String>(requestOptions);
 
 		// Labels 
 		JLabel ipLabel = new JLabel("IP:");
@@ -128,9 +128,13 @@ public class GUI {
 				String response = "";
 				String operation = (String) dropBox.getSelectedItem();
 				String content = clientTextArea.getText();
+				
+				content = content.replaceAll("\n\n\n", "\n");
+				content = content.replaceAll("\n\n", "\n");
+				content = content.replaceAll("\n\n", "\n");
 
 				if (all.isSelected()) {
-					content = "ALL\n" + content;
+					content = "ALL";
 				}
 				if (bibtex.isSelected()) {
 					response = client.sendRequestBibtex(operation, content);
@@ -138,6 +142,21 @@ public class GUI {
 				else {
 					response = client.sendRequest(operation, content);
 				}
+
+				if (all.isSelected() && operation.equals("REMOVE") && response.contains("(Y/N)")) {
+					int n = JOptionPane.showConfirmDialog(
+							guiClient,
+							"Confirm that you wish to remove records",
+									"Confirm",
+									JOptionPane.YES_NO_OPTION);
+					if (n == 0) {
+						response = client.sendRequest("Y"); 
+					}
+					else {
+						response = client.sendRequest("N");
+					}
+				}
+						
 				serverTextArea.setText(response);
 			}
 
@@ -261,7 +280,7 @@ public class GUI {
 					} else if(ip_b.isEmpty()) {
 						String s = (String)JOptionPane.showInputDialog(
 								guiClient,
-								"Please enter a IP address",
+								"Please enter an IP address",
 								"Error",
 								JOptionPane.PLAIN_MESSAGE,
 								null,
@@ -292,12 +311,13 @@ public class GUI {
 						serverTextArea.setText(response);
 					}
 				} else {
-					toggleButton.setText("Conect");
+					toggleButton.setText("Connect");
 					toggleButton.setSelected(false);
 
 					Submit.setEnabled(false);
 					try {
-						client.closeConnection();
+						String response = client.closeConnection();
+						serverTextArea.setText(response);
 					} catch (IOException e) {  }	
 				}
 			}
@@ -310,7 +330,7 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String s = (String) dropBox.getSelectedItem();
-				
+
 				bibtex.setVisible(false);
 				bibtex.setSelected(false);
 				all.setVisible(false);

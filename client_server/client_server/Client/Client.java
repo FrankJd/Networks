@@ -41,17 +41,11 @@ public class Client {
 
 	public String Connect(String ip, int port){
 		try {
-			if (port > reservedPort) {
 				socket = new Socket(ip, port);
 				InputStream is = socket.getInputStream();
 				out = new DataOutputStream(socket.getOutputStream());
 				in = new BufferedReader(new InputStreamReader(is));
-				out.writeBytes("GET\n\n");
 				return getResponse();
-			}
-			else {
-				JOptionPane.showMessageDialog(null,  "Port numbers between 0 and 1,023 are reserved for privileged users" , null, JOptionPane.ERROR_MESSAGE);
-			}
 		} catch (ConnectException e){
 			JOptionPane.showMessageDialog(null,  "No server available" , null, JOptionPane.ERROR_MESSAGE);
 
@@ -64,41 +58,51 @@ public class Client {
 
 		return "";
 	}
+	
+	public String sendRequest(String operation) {
+		String response = "";
+
+		try {
+			out.writeBytes(operation + "\n\n");
+		} catch (IOException e) {
+			return "ERROR: Connection closed by client unexpectedly";
+		}
+
+		response = getResponse();
+
+		return response;
+	}
 
 	public String sendRequest(String operation, String content) {
 		String response = "";
 		int isbnIndex, endIndex;
 		boolean validIsbn;
+		
+		content = content.trim();
+		if (content.length() == 0) {
+			return "ERROR: Invalid request";
+		}
+		content = operation + "\n" + content + "\n\n";
+				
+		isbnIndex = content.toUpperCase().indexOf("ISBN") + 4;
 
-		isbnIndex = content.toUpperCase().indexOf("ISBN");
-	//	System.out.println("sending");
-
-		if (isbnIndex != -1) {
+		if (isbnIndex != 3) { //-1+4
 			endIndex = content.indexOf('\n', isbnIndex);
-			validIsbn = IsbnValidator.validIsbn(content.substring(isbnIndex, endIndex));
+			validIsbn = IsbnValidator.validIsbn(content.substring(isbnIndex, endIndex).trim());
 			if (!validIsbn) {
 				response = "ERROR: Invalid ISBN";
 				return response;
 			}
 		}
-		content = content.trim();
-		if (content.length() == 0) {
-			return "ERROR: Invalid request";
-		}
-		content = operation + "\n" + content + "\n";
-		//out.print(content);
+		
 		try {
 			out.writeBytes(content);
 		} catch (IOException e) {
-			return "ERROR: Connection closed by client unexpectedly";
+			return "ERROR: Connection closed by server unexpectedly";
 		}
-		//System.out.println("cont: " + content);
-		
-		//System.out.println("getting r");
-		response = getResponse();
-		
-		//System.out.println("Response: " + response);
 
+		response = getResponse();
+	
 		return response;
 	}
 
@@ -107,11 +111,11 @@ public class Client {
 
 		content = content.trim();
 		content = operation + "\n" + content + "\n\n";
-		//System.out.println("hi");
+
 		try {
 			out.writeBytes(content);
 		} catch (IOException e) {
-			return "ERROR: Connection closed by client unexpectedly";
+			return "ERROR: Connection closed by server unexpectedly";
 		}
 
 		response = getResponse();
@@ -124,8 +128,7 @@ public class Client {
 
 		try {
 			for (line = in.readLine(); line != null && !line.isEmpty(); line = in.readLine()) {		
-			//	System.out.println("client: " + line);
-				response += line;
+				response += line + "\n";
 			}
 			if (line == null) {
 				response = "ERROR: Connection closed by server unexpectedly";
@@ -136,7 +139,7 @@ public class Client {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
 		return response;
 	}
 
@@ -165,23 +168,25 @@ public class Client {
 	}
 
 	private static String getKey(List<String> lines) {
-		int commaIndex = lines.get(2).substring(6).indexOf(',');
-		if (commaIndex == -1) commaIndex = lines.get(2).length();	
-		String lastName = lines.get(2).substring(7, commaIndex);
-		lastName = String.format("%-4.4s", lastName).replace(' ', 'x');
+		int commaIndex = lines.get(2).indexOf(',');
+		if (commaIndex == -1) commaIndex = lines.get(2).length();
+		String lastName = lines.get(2).substring(6, commaIndex).trim();
+		lastName = String.format("%4.4s", lastName).replace(' ', 'x');
 
 		String year = String.format("%-4.4s", lines.get(4).substring(5)).replace(' ', 'x');
 
 		return lastName + year;
 	}
 
-	public void closeConnection() throws IOException {
+	public String closeConnection() throws IOException {
+		String response = sendRequest("CLOSE");
+		
 		//close streams and socket
 		out.close();
 		in.close();
 		socket.close();
 
-		return;
+		return response;
 	}
 
 }
