@@ -1,4 +1,4 @@
-package Client;
+
 
 
 /*
@@ -162,14 +162,26 @@ public class GUI {
 						port_b = port.getText();
 
 						if (!port_b.isEmpty() && !ip_b.isEmpty()) {
+							
+							
+							try{
 							int result = Integer.parseInt(port_b);
-								String response = client.Connect(ip_b, result);
-								if(client.isConnected){
-									serverTextArea.setText(response);
-									Disconnect.setEnabled(true);
-									Submit.setEnabled(true);	
-									Connect.setEnabled(false);
-								}
+							String response = client.Connect(ip_b, result);
+							
+				
+							if(client.isConnected){
+								serverTextArea.setText(response);
+								Disconnect.setEnabled(true);
+								Submit.setEnabled(true);	
+								Connect.setEnabled(false);
+							}
+							}catch(Exception ec){
+								
+								JOptionPane.showMessageDialog(null,  "Port Number is not vaild" , null, JOptionPane.ERROR_MESSAGE);
+								
+							}
+								
+								
 								
 							} else{
 								JOptionPane.showMessageDialog(null,  "Must establish a Port number and IP address" , null, JOptionPane.ERROR_MESSAGE);
@@ -189,9 +201,9 @@ public class GUI {
 							port.setText(r);
 							port_b = port.getText();
 							if (!port_b.isEmpty()){
-								int result = Integer.parseInt(port_b);
 								
-								//toggleButton.setSelected(false);
+								try {
+								int result = Integer.parseInt(port_b);
 								String response = client.Connect(ip_b, result);
 								if (client.isConnected){
 							
@@ -200,6 +212,17 @@ public class GUI {
 									Submit.setEnabled(true);	
 									Connect.setEnabled(false);
 								}
+								
+								
+								
+								}catch (Exception ee){
+									
+									JOptionPane.showMessageDialog(null,  "Port Number is not vaild" , null, JOptionPane.ERROR_MESSAGE);
+									
+									
+								}
+								//toggleButton.setSelected(false);
+								
 								
 							} else {
 								JOptionPane.showMessageDialog(null,  "Must establish a Port number" , null, JOptionPane.ERROR_MESSAGE);
@@ -219,16 +242,25 @@ public class GUI {
 							if (!ip_b.isEmpty()) {
 								
 								
-								int result = Integer.parseInt(port_b);
-								String response = client.Connect(ip_b, result);
-								if (client.isConnected){
-									Connect.setText("Disconnect");	
-									serverTextArea.setText(response);
-									Submit.setEnabled(true);
-									Disconnect.setEnabled(true);
-									Connect.setEnabled(false);
+								try {
+									int result = Integer.parseInt(port_b);
+									String response = client.Connect(ip_b, result);
+									if (client.isConnected){
+								
+										serverTextArea.setText(response);
+										Disconnect.setEnabled(true);
+										Submit.setEnabled(true);	
+										Connect.setEnabled(false);
+									}
 									
-								}
+									
+									
+									}catch (Exception cex){
+										
+										JOptionPane.showMessageDialog(null,  "Port Number is not vaild" , null, JOptionPane.ERROR_MESSAGE);
+										
+										
+									}
 								
 							} else {
 								JOptionPane.showMessageDialog(null,  "Must give an IP address" , null, JOptionPane.ERROR_MESSAGE);
@@ -236,17 +268,25 @@ public class GUI {
 
 						} else {
 
-							int result = Integer.parseInt(port_b);
-
-					
-							String response = client.Connect(ip_b, result);
-							if (client.isConnected){
-								serverTextArea.setText(response);
-								Submit.setEnabled(true);
-								Disconnect.setEnabled(true);
-								Connect.setEnabled(false);
+							try {
+								int result = Integer.parseInt(port_b);
+								String response = client.Connect(ip_b, result);
+								if (client.isConnected){
+							
+									serverTextArea.setText(response);
+									Disconnect.setEnabled(true);
+									Submit.setEnabled(true);	
+									Connect.setEnabled(false);
+								}
 								
-							}
+								
+								
+								}catch (Exception cxe){
+									
+									JOptionPane.showMessageDialog(null,  "Port Number is not vaild" , null, JOptionPane.ERROR_MESSAGE);
+									
+									
+								}
 							
 						}
 						
