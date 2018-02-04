@@ -1,4 +1,4 @@
-
+package Client;
 
 
 /*
@@ -130,8 +130,13 @@ public class GUI {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+				
+				if(Connect.isEnabled()){
+				
 				String port_b = port.getText(); 
 				String ip_b = ip.getText();
+				
+				
 						 
 					if (port_b.isEmpty() && ip_b.isEmpty()) {
 							
@@ -163,6 +168,7 @@ public class GUI {
 									serverTextArea.setText(response);
 									Disconnect.setEnabled(true);
 									Submit.setEnabled(true);	
+									Connect.setEnabled(false);
 								}
 								
 							} else{
@@ -192,7 +198,7 @@ public class GUI {
 									serverTextArea.setText(response);
 									Disconnect.setEnabled(true);
 									Submit.setEnabled(true);	
-									
+									Connect.setEnabled(false);
 								}
 								
 							} else {
@@ -220,7 +226,7 @@ public class GUI {
 									serverTextArea.setText(response);
 									Submit.setEnabled(true);
 									Disconnect.setEnabled(true);
-									
+									Connect.setEnabled(false);
 									
 								}
 								
@@ -238,7 +244,7 @@ public class GUI {
 								serverTextArea.setText(response);
 								Submit.setEnabled(true);
 								Disconnect.setEnabled(true);
-							
+								Connect.setEnabled(false);
 								
 							}
 							
@@ -246,7 +252,10 @@ public class GUI {
 						
 						
 						
+					}else{
+						JOptionPane.showMessageDialog(null,  "Button is disabled " , null, JOptionPane.ERROR_MESSAGE);
 					}
+			}
 
 					@Override
 					public void mouseExited(MouseEvent e) {	}
@@ -271,6 +280,8 @@ public class GUI {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+				
+				if(Submit.isEnabled()){
 				String response = "";
 				String operation = (String) dropBox.getSelectedItem();
 				String content = clientTextArea.getText();
@@ -305,6 +316,12 @@ public class GUI {
 				}
 						
 				serverTextArea.setText(response);
+				}else{
+					
+					JOptionPane.showMessageDialog(null,  "Button is disabled " , null, JOptionPane.ERROR_MESSAGE);
+					
+					
+				}
 			}
 
 			@Override
@@ -370,14 +387,23 @@ public class GUI {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				
+				if(Disconnect.isEnabled()){
+				
 				try { 
 					Submit.setEnabled(false);
 					Disconnect.setEnabled(false);
 					String response = client.closeConnection();
 					serverTextArea.setText(response);
+					Connect.setEnabled(true);
+					
+					
 				} catch (IOException ee) {
 					
 				}	
+				}else{
+					
+					JOptionPane.showMessageDialog(null,  "Button is disabled " , null, JOptionPane.ERROR_MESSAGE);
+				}
 			
 			}
 
