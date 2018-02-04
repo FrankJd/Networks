@@ -192,7 +192,7 @@ public class GUI {
 									serverTextArea.setText(response);
 									Disconnect.setEnabled(true);
 									Submit.setEnabled(true);	
-									System.out.println("3");
+									
 								}
 								
 							} else {
@@ -220,7 +220,7 @@ public class GUI {
 									serverTextArea.setText(response);
 									Submit.setEnabled(true);
 									Disconnect.setEnabled(true);
-									System.out.println("2");
+									
 									
 								}
 								
@@ -238,7 +238,7 @@ public class GUI {
 								serverTextArea.setText(response);
 								Submit.setEnabled(true);
 								Disconnect.setEnabled(true);
-								System.out.println("1");
+							
 								
 							}
 							
