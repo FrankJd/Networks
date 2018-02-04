@@ -28,6 +28,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 public class Client {
+	public boolean isConnected;
 	final int reservedPort = 1023; 
 	Socket socket;
 	DataOutputStream out;
@@ -45,14 +46,18 @@ public class Client {
 				InputStream is = socket.getInputStream();
 				out = new DataOutputStream(socket.getOutputStream());
 				in = new BufferedReader(new InputStreamReader(is));
+				isConnected = true;
 				return getResponse();
 		} catch (ConnectException e){
+			isConnected = false;
 			JOptionPane.showMessageDialog(null,  "Unable to connect to IP address " + ip + " at port " + port, null, JOptionPane.ERROR_MESSAGE);
 
 		} catch(UnknownHostException e){
+			isConnected = false;
 			JOptionPane.showMessageDialog(null,  "Unknown Host" , null, JOptionPane.ERROR_MESSAGE);
 
 		} catch(IOException e){
+			isConnected = false;
 			JOptionPane.showMessageDialog(null,  "Couldn't get I/O for the connection" , null, JOptionPane.ERROR_MESSAGE);
 		}
 
