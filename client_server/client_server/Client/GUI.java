@@ -1,3 +1,4 @@
+
 /*
  * File: GUI
  * Author: Troy Nechanicky, nech5860, 150405860 
@@ -217,9 +218,12 @@ public class GUI {
 			public void actionPerformed(ActionEvent actionEvent) {
 				String port_b = port.getText(); 
 				String ip_b = ip.getText();
-
-				AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
-				boolean selected = abstractButton.getModel().isSelected();
+				
+				 AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
+			      boolean selected = abstractButton.getModel().isSelected();
+			      System.out.println("Action - selected=" + selected + "\n");
+				
+	
 
 				if (selected == true){
 					if (port_b.isEmpty() && ip_b.isEmpty()) {
@@ -248,11 +252,15 @@ public class GUI {
 						if (!port_b.isEmpty() && !ip_b.isEmpty()) {
 							int result = Integer.parseInt(port_b);
 
-							toggleButton.setText("Disconnect");
-							toggleButton.setSelected(false);
+							
+							//toggleButton.setSelected(false);
 							String response = client.Connect(ip_b, result);
-							serverTextArea.setText(response);
-							Submit.setEnabled(true);
+							if(client.isConnected){
+								toggleButton.setText("Disconnect");
+								serverTextArea.setText(response);
+								Submit.setEnabled(true);	
+							}
+							
 						} else{
 							JOptionPane.showMessageDialog(null,  "Must establish a Port number and IP address" , null, JOptionPane.ERROR_MESSAGE);
 						}
@@ -269,11 +277,15 @@ public class GUI {
 						port_b = port.getText();
 						if (!port_b.isEmpty()){
 							int result = Integer.parseInt(port_b);
-							toggleButton.setText("Disconnect");
-							toggleButton.setSelected(false);
+							
+							//toggleButton.setSelected(false);
 							String response = client.Connect(ip_b, result);
-							serverTextArea.setText(response);
-							Submit.setEnabled(true);
+							if (client.isConnected){
+								toggleButton.setText("Disconnect");	
+								serverTextArea.setText(response);
+								Submit.setEnabled(true);	
+							}
+							
 						} else {
 							JOptionPane.showMessageDialog(null,  "Must establish a Port number" , null, JOptionPane.ERROR_MESSAGE);
 						}
@@ -288,13 +300,19 @@ public class GUI {
 								"127.0.0.1");
 						ip.setText(s);
 						ip_b = ip.getText();
+						
 						if (!ip_b.isEmpty()) {
-							toggleButton.setText("Disconnect");
-							toggleButton.setSelected(false);
+							
+							
 							int result = Integer.parseInt(port_b);
 							String response = client.Connect(ip_b, result);
-							serverTextArea.setText(response);
-							Submit.setEnabled(true);
+							if (client.isConnected){
+								toggleButton.setText("Disconnect");	
+								serverTextArea.setText(response);
+								Submit.setEnabled(true);
+								
+							}
+							
 						} else {
 							JOptionPane.showMessageDialog(null,  "Must give an IP address" , null, JOptionPane.ERROR_MESSAGE);
 						}
@@ -303,16 +321,18 @@ public class GUI {
 
 						int result = Integer.parseInt(port_b);
 
-						Submit.setEnabled(true);
-						toggleButton.setText("Disconnect");
-						toggleButton.setSelected(false);
-
+				
 						String response = client.Connect(ip_b, result);
-						serverTextArea.setText(response);
+						if (client.isConnected){
+							Submit.setEnabled(true);
+							toggleButton.setText("Disconnect");
+							serverTextArea.setText(response);
+						}
+						
 					}
 				} else {
 					toggleButton.setText("Connect");
-					toggleButton.setSelected(false);
+					//toggleButton.setSelected(false);
 
 					Submit.setEnabled(false);
 					try {
@@ -321,6 +341,7 @@ public class GUI {
 					} catch (IOException e) {  }	
 				}
 			}
+			
 		};
 
 		toggleButton.addActionListener(actionListener);
