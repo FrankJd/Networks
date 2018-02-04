@@ -221,7 +221,7 @@ public class GUI {
 				
 				 AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
 			      boolean selected = abstractButton.getModel().isSelected();
-			      System.out.println("Action - selected=" + selected + "\n");
+			    
 				
 	
 
