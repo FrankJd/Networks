@@ -144,7 +144,7 @@ public class GUI {
 					response = client.sendRequest(operation, content);
 				}
 
-				if (all.isSelected() && operation.equals("REMOVE") && response.contains("(Y/N)")) {
+				if (operation.equals("REMOVE") && response.contains("(Y/N)")) {
 					int n = JOptionPane.showConfirmDialog(
 							guiClient,
 							"Confirm that you wish to remove records",
