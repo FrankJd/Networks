@@ -82,33 +82,31 @@ public class Bibliography {
 			throw new RequestException("ERROR: Matching record not found");
 		}
 
+		response.add("SUCCESS: " + specifiedBooks.size() + " records retrieved\n");
+
 		for (Book book : specifiedBooks) {
 			response.add(book.toString() + "\n");
 		}
 
-		if (response.size() == 0) {
-			response.add("ERROR: No matching record(s)\n\n");
-		}
-		else {
-			response.set(response.size()-1, response.get(response.size()-1) + "\n");
-		}
+		response.set(response.size()-1, response.get(response.size()-1) + "\n");
 
 		return response;
 	}
 
-	public synchronized List<String> getAll() {
+	public synchronized List<String> getAll() throws RequestException {
 		List<String> response = new ArrayList<String>();
+
+		if (books.size() == 0) {
+			throw new RequestException("ERROR: Matching record not found");
+		}
+
+		response.add("SUCCESS: " + books.size() + " records retrieved\n");
 
 		for (Book book : books) {
 			response.add(book.toString() + "\n");
 		}
 
-		if (response.size() == 0) {
-			response.add("ERROR: No matching record(s)\n\n");
-		}
-		else {
-			response.set(response.size()-1, response.get(response.size()-1) + "\n");
-		}
+		response.set(response.size()-1, response.get(response.size()-1) + "\n");
 
 		return response;
 	}

@@ -185,7 +185,7 @@ public class ClientHandler implements Runnable {
 				
 				break;
 			case "CLOSE":
-				sendMsg("Closing connection");
+				sendMsg("SUCCESS: Closing connection");
 				closeConnection();
 				return;
 			default:

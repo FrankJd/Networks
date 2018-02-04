@@ -47,7 +47,7 @@ public class Client {
 				in = new BufferedReader(new InputStreamReader(is));
 				return getResponse();
 		} catch (ConnectException e){
-			JOptionPane.showMessageDialog(null,  "No server available" , null, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null,  "Unable to connect to IP address " + ip + " at port " + port, null, JOptionPane.ERROR_MESSAGE);
 
 		} catch(UnknownHostException e){
 			JOptionPane.showMessageDialog(null,  "Unknown Host" , null, JOptionPane.ERROR_MESSAGE);
@@ -65,7 +65,7 @@ public class Client {
 		try {
 			out.writeBytes(operation + "\n\n");
 		} catch (IOException e) {
-			return "ERROR: Connection closed by client unexpectedly";
+			return "ERROR: Connection closed by server unexpectedly";
 		}
 
 		response = getResponse();
@@ -145,9 +145,9 @@ public class Client {
 
 	private static String getBibtex(String response) {
 		List<String> lines = new ArrayList<String>(Arrays.asList(response.split("\n")));
-		String bibtex = "";
+		String bibtex = lines.get(0) + "\n";
 
-		for (int i = 0; i < lines.size(); i += 5) {
+		for (int i = 1; i < lines.size(); i += 5) {
 			bibtex = bibtex
 					+ "@book{" + getKey(lines.subList(i, i + 5)) + ",\n"
 					+ getBibtexLine(lines.get(i)) + ",\n"
@@ -171,7 +171,7 @@ public class Client {
 		int commaIndex = lines.get(2).indexOf(',');
 		if (commaIndex == -1) commaIndex = lines.get(2).length();
 		String lastName = lines.get(2).substring(6, commaIndex).trim();
-		lastName = String.format("%4.4s", lastName).replace(' ', 'x');
+		lastName = String.format("%-4.4s", lastName).replace(' ', 'x');
 
 		String year = String.format("%-4.4s", lines.get(4).substring(5)).replace(' ', 'x');
 
