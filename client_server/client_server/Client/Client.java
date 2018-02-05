@@ -50,15 +50,15 @@ public class Client {
 				return getResponse();
 		} catch (ConnectException e){
 			isConnected = false;
-			JOptionPane.showMessageDialog(null,  "Unable to connect to IP address " + ip + " at port " + port, null, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Unable to connect to IP address " + ip + " at port " + port, null, JOptionPane.ERROR_MESSAGE);
 
 		} catch(UnknownHostException e){
 			isConnected = false;
-			JOptionPane.showMessageDialog(null,  "Unknown Host" , null, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Unable to connect to IP address " + ip + " at port ", null, JOptionPane.ERROR_MESSAGE);
 
 		} catch(IOException e){
 			isConnected = false;
-			JOptionPane.showMessageDialog(null,  "Couldn't get I/O for the connection" , null, JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Unable to connect to IP address " + ip + " at port ", null, JOptionPane.ERROR_MESSAGE);
 		}
 
 		return "";
@@ -114,16 +114,11 @@ public class Client {
 	public String sendRequestBibtex(String operation, String content) {
 		String response = "";
 
-		content = content.trim();
-		content = operation + "\n" + content + "\n\n";
+		response = sendRequest(operation, content);
 
-		try {
-			out.writeBytes(content);
-		} catch (IOException e) {
-			return "ERROR: Connection closed by server unexpectedly";
+		if (response.contains("ERROR")) {
+			return response;
 		}
-
-		response = getResponse();
 
 		return getBibtex(response);
 	}
