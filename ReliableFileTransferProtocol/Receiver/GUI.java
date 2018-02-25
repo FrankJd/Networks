@@ -19,8 +19,9 @@ public class GUI extends javax.swing.JFrame
     	JFrame guiClient = new JFrame("Client");
 
 			
-    	guiClient.setSize (660, 230);
     
+      	guiClient.setSize (660, 150);
+    	guiClient.setResizable(false);
 
     	JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
