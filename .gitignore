@@ -1,3 +1,2 @@
-client_server/.metadata
-client_server/.recommenders
-*.class
+*.metadata
+*.recommenders
