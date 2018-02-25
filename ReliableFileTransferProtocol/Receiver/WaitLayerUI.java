@@ -45,11 +45,7 @@ class WaitLayerUI extends LayerUI<JPanel> implements ActionListener
         Graphics2D g2 = (Graphics2D) g.create();
 
         float fade = (float) mFadeCount / (float) mFadeLimit;
-        // Gray it out.
-        Composite urComposite = g2.getComposite();
-        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, .5f * fade));
-        g2.fillRect(0, 0, w, h);
-        g2.setComposite(urComposite);
+       
 
         // Paint the wait indicator.
         int s = Math.min(w, h) / 5;
