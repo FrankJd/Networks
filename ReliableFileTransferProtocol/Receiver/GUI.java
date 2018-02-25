@@ -1,42 +1,32 @@
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import javax.swing.*;
 
 
+public class GUI extends javax.swing.JFrame
+{
+    static final WaitLayerUI layerUI = new WaitLayerUI();
+  
+    public GUI(Receiver receiver)
+    {
+    	
+    	
+    	
+    	JFrame guiClient = new JFrame("Client");
 
-public class GUI extends javax.swing.JFrame {
+			
+    	guiClient.setSize (660, 230);
+    
 
-	
-
-	Receiver client;
-	JFrame guiClient = new JFrame("Client");
-
-	public GUI(Receiver c) {
-		client = c;
-
-		guiClient.setSize (660, 230);
-		guiClient.setResizable(false);
-
-		// GUI Elements 
-
-		
-		
-		
-		
-		
-		// Labels 
+    	JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
 		JLabel senderIPLabel  = new JLabel("SenderIPAddress:");
 		JLabel receiverPortLabel  = new JLabel("Receiver Port:        ");
-		JLabel outputFile  = new JLabel("Output File:              ");
+		JLabel outputFile  = new JLabel("Output File:");
 		JLabel reliableUnreliable   = new JLabel(" Unreliable transport: ");
 		
 		JLabel senderPort  = new JLabel("Sender Port:");
@@ -113,30 +103,74 @@ public class GUI extends javax.swing.JFrame {
 		ipPanle6.add(packetsText);
 		
 		guiClient.setVisible(true);
-		communcasPane.add(ipPanle1);
-		communcasPane.add(ipPanle2);
-		communcasPane.add(ipPanle3);
-		communcasPane.add(ipPanle4);
-		communcasPane.add(ipPanle5);
-		communcasPane.add(ipPanle6);
+		panel.add(ipPanle1);
+		panel.add(ipPanle2);
+		panel.add(ipPanle3);
+		panel.add(ipPanle4);
+		panel.add(ipPanle5);
+		panel.add(ipPanle6);
 	
+    	
+    	
+    	
 
-		guiClient.add(communcasPane, BorderLayout.NORTH);
-		
+    	
+    	
+    
+        JLayer<JPanel> jlayer = new JLayer<>(panel, layerUI);
 
+   
+ 
+        guiClient.add(jlayer);
+   
+        
+      
+        
+        
+      
+        
+        
+        Transfer.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {}
 
-		guiClient.add(communcationsPane);
-		guiClient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		guiClient.setVisible(true);
-			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				
+				  java.awt.EventQueue.invokeLater(new Runnable()
+			        {
 
-		
-		
-		
-  
+			            @Override
+			            public void run()
+			            {
+			              
+			            	
+			                layerUI.start();
+			                
+			               
+			            }
+			        });
+				
+			}
 
-		
+			@Override
+			public void mouseExited(MouseEvent e) {	}
 
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+
+			@Override
+			public void mouseClicked(MouseEvent e) { }
+		});
+        
+        
+        
+        
+    	guiClient.setVisible(true);
 		
-	}
+    }
+
+   
+
+   
 }
