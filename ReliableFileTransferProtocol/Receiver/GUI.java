@@ -10,11 +10,11 @@ import javax.swing.*;
 public class GUI extends javax.swing.JFrame
 {
     static final WaitLayerUI layerUI = new WaitLayerUI();
+    Receiver receiver;
   
-    public GUI(Receiver receiver)
+    public GUI()
     {
-    	
-    	
+    	receiver = new Receiver(this);
     	
     	JFrame guiClient = new JFrame("Client");
 

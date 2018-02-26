@@ -8,11 +8,11 @@ import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 
 public class Sender extends Host {
-	long startTime = System.nanoTime();
-	int timeout;
-	BufferedInputStream fileBuf;
-	byte[] buf = new byte[124];
-	SenderSocket socket;
+	private long startTime = System.nanoTime();
+	private int timeout;
+	private BufferedInputStream fileBuf;
+	private byte[] buf = new byte[124];
+	private SenderSocket socket;
 
 	Sender(int localPort, int receiverPort, InetAddress receiverAddr, int timeout) throws SocketException {
 		socket = new SenderSocket(localPort, receiverPort, receiverAddr);
@@ -21,6 +21,7 @@ public class Sender extends Host {
 
 	public static void main(String[] args) {
 		Sender sender;
+		double elapsedTime;
 
 		if (args.length != 5) {
 			System.out.println("ERROR: Incorrect number of arguments");
@@ -37,7 +38,9 @@ public class Sender extends Host {
 		}
 
 		try {
-			sender.transfer(args[3]);
+			elapsedTime = sender.transfer(args[3]);
+			System.out.println("SUCCESS: File transferred in "
+					+ String.format("%.4f", elapsedTime) + " milliseconds");
 		}
 		catch(FileNotFoundException e) {
 			printException(e, "ERROR: Unable to open file");
@@ -54,7 +57,7 @@ public class Sender extends Host {
 		return;
 	}
 
-	private void transfer(String filename) throws IOException, FileNotFoundException {
+	private double transfer(String filename) throws IOException, FileNotFoundException {
 		fileBuf = new BufferedInputStream(new FileInputStream(filename));
 		int bytesRead;
 		boolean received = false;
@@ -79,16 +82,15 @@ public class Sender extends Host {
 				continue;
 			}
 			if (isValidSeq(socket.receivePacket.getData()[0])) {
-				//flip seqNum bit
-				socket.seqNum = (byte) (socket.seqNum ^ 1);
+				nextSeq();
 			}
 			else {
 				fileBuf.reset();
 			}
 		}
-		
+
 		received = false;
-		
+
 		while (!received) {
 			socket.sendEOT();
 			try {
@@ -98,16 +100,16 @@ public class Sender extends Host {
 				continue;
 			}
 			if (isValidSeq(socket.receivePacket.getData()[0])) {
-				//flip seqNum bit
-				socket.seqNum = (byte) (socket.seqNum ^ 1);
+				nextSeq();
 				received = true;
 			}
 		}
 		transmissionTime = ((double) (System.nanoTime() - startTime)) / 1E9;
-		ByteBuffer.wrap(timeBytes).putDouble(transmissionTime);
-				
+
+		/*ByteBuffer.wrap(timeBytes).putDouble(transmissionTime);
+
 		received = false;
-		
+
 		while (!received) {
 			socket.send(timeBytes, Double.BYTES);
 			try {
@@ -117,13 +119,12 @@ public class Sender extends Host {
 				continue;
 			}
 			if (isValidSeq(socket.receivePacket.getData()[0])) {
-				//flip seqNum bit
-				socket.seqNum = (byte) (socket.seqNum ^ 1);
+				nextSeq();
 				received = true;
 			}
-		}
-		
-		return;
+		}*/
+
+		return transmissionTime;
 	}
 
 	private boolean isSOT(byte header) {
@@ -133,21 +134,10 @@ public class Sender extends Host {
 	private void closeAll() {
 		try {
 			fileBuf.close();
+			socket.close();
 		}
 		catch (Exception e) {}
 
 		return;		
 	}
-
-	private static void printException(Exception e) {
-		System.out.println(e.getMessage());
-		e.printStackTrace();
-	}
-
-	private static void printException(Exception e, String msg) {
-		System.out.println(msg);
-		System.out.println(e.getMessage());
-		e.printStackTrace();
-	}
-
 }
