@@ -17,6 +17,9 @@ public class Receiver extends Host {
 	private boolean reliable;
 	private FileOutputStream fileOutput;
 	GUI gui;
+	
+	//for testing
+	Receiver() { }
 
 	Receiver(GUI gui) {
 		this.gui = gui;
