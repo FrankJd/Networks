@@ -1,21 +1,27 @@
-
-import java.awt.BorderLayout;
+/*
+ * File: GUI
+ * Author: Troy Nechanicky, nech5860, 150405860 
+ * Frank Khalil, khal6600, 160226600
+ * Group: 08
+ * Version: February 27, 2018
+ * 
+ * Description: GUI for Receiver
+ * 	Follows CP372 A2 Stop and wait Protocol 
+ */
 import java.awt.FlowLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import javax.swing.*;
 
 
 public class GUI extends javax.swing.JFrame
 {
-    static final WaitLayerUI layerUI = new WaitLayerUI();
+	
+	static final WaitLayerUI layerUI = new WaitLayerUI();
     Receiver receiver;
-  
+    JTextArea packetsText = new JTextArea(1, 5);
     public GUI()
-    {
-    	receiver = new Receiver(this);
-    	
+    {   	
     	JFrame guiClient = new JFrame("Client");
 
 			
@@ -25,10 +31,10 @@ public class GUI extends javax.swing.JFrame
 
     	JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-		JLabel senderIPLabel  = new JLabel("SenderIPAddress:");
-		JLabel receiverPortLabel  = new JLabel("Receiver Port:        ");
+		JLabel senderAddrLabel  = new JLabel("Sender IP Address:");
+		JLabel receiverPortLabel  = new JLabel("Receiver Port:          ");
 		JLabel outputFile  = new JLabel("Output File:");
-		JLabel reliableUnreliable   = new JLabel(" Unreliable transport: ");
+		JLabel Unreliable   = new JLabel(" Unreliable transport: ");
 		
 		JLabel senderPort  = new JLabel("Sender Port:");
 		
@@ -37,21 +43,22 @@ public class GUI extends javax.swing.JFrame
 
 		
 		// check box 
-		JCheckBox reliableUnreliableCheckBox  = new JCheckBox("");
+		JCheckBox UnreliableCheckBox  = new JCheckBox("");
 
 		
 		// button 
 		
 		JButton Transfer = new JButton("Transfer");
+
 		
 		
 		// text field 
-		JTextField senderip = new JTextField(17);
+		JTextField senderAddr = new JTextField(17);
 		JTextField receiverPort = new JTextField(17);
 		JTextField file = new JTextField(17);
 		JTextField SenderPortText = new JTextField(17);
 		
-		JTextArea packetsText = new JTextArea(1, 5);
+		
 		packetsText.setEditable(false);
 
 
@@ -76,8 +83,8 @@ public class GUI extends javax.swing.JFrame
 		
 		
 	
-		ipPanle1.add(senderIPLabel);
-		ipPanle1.add(senderip);
+		ipPanle1.add(senderAddrLabel);
+		ipPanle1.add(senderAddr);
 		ipPanle1.add(senderPort);
 		ipPanle1.add(SenderPortText);
 		
@@ -92,12 +99,13 @@ public class GUI extends javax.swing.JFrame
 		ipPanle3.add(file);
 		
 		
-		ipPanle4.add(reliableUnreliable);
-		ipPanle4.add(reliableUnreliableCheckBox);
+		ipPanle4.add(Unreliable);
+		ipPanle4.add(UnreliableCheckBox);
 	
 		
 		
 		ipPanle5.add(Transfer);
+
 		
 		
 		ipPanle6.add(Packets);
@@ -123,10 +131,10 @@ public class GUI extends javax.swing.JFrame
    
  
         guiClient.add(jlayer);
-   
         
-      
+         
         
+       
         
       
         
@@ -138,19 +146,6 @@ public class GUI extends javax.swing.JFrame
 			@Override
 			public void mousePressed(MouseEvent e) {
 				
-				  java.awt.EventQueue.invokeLater(new Runnable()
-			        {
-
-			            @Override
-			            public void run()
-			            {
-			              
-			            	
-			                layerUI.start();
-			                
-			               
-			            }
-			        });
 				
 			}
 
@@ -161,7 +156,36 @@ public class GUI extends javax.swing.JFrame
 			public void mouseEntered(MouseEvent e) {}
 
 			@Override
-			public void mouseClicked(MouseEvent e) { }
+			public void mouseClicked(MouseEvent e) {
+				  try {
+					java.awt.EventQueue.invokeLater(new Runnable()
+					    {
+						  
+						    String  port_a = receiverPort.getText();
+					        String  port_b = SenderPortText.getText();
+					        int port_reveiver = Integer.parseInt(port_a);
+					        int prot_sender = Integer.parseInt(port_b);
+					        Receiver receiver = new Receiver(GUI.this, port_reveiver, prot_sender, senderAddr.getText(), UnreliableCheckBox.isSelected(), file.getText());
+					        
+					       
+					        @Override
+					        public void run()
+					        {
+					         
+					        	
+					        //	layerUI.start();
+					        receiver.transfer();
+					        	//layerUI.start();
+					        //	layerUI.stop();
+					            
+					           
+					        }
+					    });
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 		});
         
         
@@ -171,6 +195,12 @@ public class GUI extends javax.swing.JFrame
 		
     }
 
+    
+    public void displayPacketCount(int number){
+    	
+    	packetsText.setTabSize(number);
+    
+    }
    
 
    
