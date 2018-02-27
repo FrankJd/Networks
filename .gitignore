@@ -2,3 +2,4 @@
 *.recommenders
 client_server
 RemoteSystemsTempFiles
+*.class

@@ -8,11 +8,10 @@ import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 
 public class Sender extends Host {
-	private long startTime = System.nanoTime();
+	private long startTime;
 	private int timeout;
 	private BufferedInputStream fileBuf;
 	private byte[] buf = new byte[124];
-	private SenderSocket socket;
 
 	Sender(int localPort, int receiverPort, InetAddress receiverAddr, int timeout) throws SocketException {
 		socket = new SenderSocket(localPort, receiverPort, receiverAddr);
@@ -29,8 +28,7 @@ public class Sender extends Host {
 			return;
 		}
 		try {
-			sender = new Sender(Integer.parseInt(args[0]), Integer.parseInt(args[1]),
-					InetAddress.getByName(args[2]), Integer.parseInt(args[4]));
+			sender = new Sender(Integer.parseInt(args[2]), Integer.parseInt(args[1]), InetAddress.getByName(args[0]), Integer.parseInt(args[4]));
 		}
 		catch(Exception e) {
 			printException(e, "ERROR: Invalid argument(s)");
@@ -63,17 +61,21 @@ public class Sender extends Host {
 		boolean received = false;
 		double transmissionTime;
 		byte[] timeBytes = new byte[Double.BYTES];
+		int timeoutMilli = Math.max(1, timeout / 1000);
+		long sent = 0;
 
 		while (!received) {
 			socket.receive();
 			if (isSOT(socket.receivePacket.getData()[0])) received = true;
 		}		
-
-		socket.setSoTimeout(timeout / 1000);
+		
+		socket.setSoTimeout(timeoutMilli);
 		fileBuf.mark(buf.length+1);
+		startTime = System.nanoTime();
 
 		while ((bytesRead = fileBuf.read(buf, 0, buf.length)) != -1) {
 			socket.send(buf, bytesRead);
+			sent += bytesRead;
 			try {
 				socket.receive();
 			}
@@ -83,6 +85,7 @@ public class Sender extends Host {
 			}
 			if (isValidSeq(socket.receivePacket.getData()[0])) {
 				nextSeq();
+				fileBuf.mark(buf.length+1);
 			}
 			else {
 				fileBuf.reset();
@@ -92,7 +95,7 @@ public class Sender extends Host {
 		received = false;
 
 		while (!received) {
-			socket.sendEOT();
+			((SenderSocket) socket).sendEOT();
 			try {
 				socket.receive();
 			}
@@ -128,7 +131,7 @@ public class Sender extends Host {
 	}
 
 	private boolean isSOT(byte header) {
-		return (header & Socket.SOTMask) == 1;
+		return (header & Socket.SOTMask) == Socket.SOTMask;
 	}
 
 	private void closeAll() {

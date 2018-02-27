@@ -4,6 +4,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
+
+import javax.swing.JLabel;
 
 /* Relies on the following files to be in default package:
  * 	GUI
@@ -13,13 +16,30 @@ import java.net.SocketException;
 import javax.swing.JOptionPane;
 
 public class Receiver extends Host {
-	private ReceiverSocket socket;
+	//private ReceiverSocket socket;
 	private boolean reliable;
 	private FileOutputStream fileOutput;
 	GUI gui;
-	
-	//for testing
-	Receiver() { }
+
+	Receiver(int receiverPort, int senderPort, String senderAddr, boolean reliable, String filename) {
+		this.reliable = reliable; 
+
+		try {
+			socket = new ReceiverSocket(receiverPort, senderPort, InetAddress.getByName(senderAddr));
+			fileOutput = new FileOutputStream(filename);
+		} catch (SocketException | UnknownHostException e) {
+			JOptionPane.showMessageDialog(null, "ERROR: Invalid connection parameters", null, JOptionPane.ERROR_MESSAGE);
+			printException(e, "ERROR: Invalid parameters");
+			return;
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "ERROR: Invalid filename", null, JOptionPane.ERROR_MESSAGE);
+			printException(e, "ERROR: Invalid filename");
+			return;
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "ERROR: Unexpected exception", null, JOptionPane.ERROR_MESSAGE);
+			printException(e);
+		}
+	}
 
 	Receiver(GUI gui) {
 		this.gui = gui;
@@ -29,31 +49,20 @@ public class Receiver extends Host {
 		new GUI();
 	}
 
-	public void transfer(int receiverPort, int senderPort, InetAddress senderAddr, boolean reliable, String filename) {
-		this.reliable = reliable; 
-		
-		try {
-			socket = new ReceiverSocket(receiverPort, senderPort, senderAddr);
-			fileOutput = new FileOutputStream(filename);
-		} catch (SocketException e) {
-			JOptionPane.showMessageDialog(null, "ERROR: Invalid connection parameters", null, JOptionPane.ERROR_MESSAGE);
-			printException(e, "ERROR: Invalid parameters");
-			return;
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "ERROR: Invalid filename", null, JOptionPane.ERROR_MESSAGE);
-			printException(e, "ERROR: Invalid filename");
-			return;
-		}
-
+	public void transfer() {
 		try {
 			getFile();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "ERROR: Unexpected exception", null, JOptionPane.ERROR_MESSAGE);
 			printException(e);
+			closeAll();
+			return;
 		}
 		
 		closeAll();
 		
+		JOptionPane.showMessageDialog(null, "SUCCESS: Transfer completed", null, JOptionPane.PLAIN_MESSAGE);
+
 		return;
 	}
 
@@ -62,19 +71,19 @@ public class Receiver extends Host {
 		boolean EOT = false;
 		byte[] buf;
 		int bufLen;
-		
-		socket.sendSOT();
-		
+
+		((ReceiverSocket) socket).sendSOT();
+
 		while (!EOT) {
-			socket.receive(reliable);
-						
+			((ReceiverSocket) socket).receive(reliable);
+
 			buf = socket.receivePacket.getData();
 			bufLen = socket.receivePacket.getLength();
-			
+
 			if (isValidSeq(buf[0])) {
-				socket.sendACK();
+				((ReceiverSocket) socket).sendACK();
 				//GUI.displayPacketCount(socket.getReceivedCount());
-				
+
 				if (isEOT(buf[0])) {
 					EOT = true;
 				}
@@ -83,17 +92,17 @@ public class Receiver extends Host {
 				}
 			} else {
 				nextSeq();
-				socket.sendACK();
+				((ReceiverSocket) socket).sendACK();
 			}
-			
+
 			nextSeq();			
 		}
-		
+
 		/*while (!received) {
 			socket.receive(reliable);
-						
+
 			buf = socket.receivePacket.getData();
-			
+
 			if (isValidSeq(buf[0])) {
 				received = true;
 				socket.sendACK();
@@ -101,15 +110,15 @@ public class Receiver extends Host {
 				nextSeq();
 				socket.sendACK();
 			}
-			
+
 			nextSeq();			
 		}*/
-		
+
 		return;	
 	}
-	
+
 	private boolean isEOT(byte header) {
-		return (header & Socket.EOTMask) == 1;
+		return (header & Socket.EOTMask) == Socket.EOTMask;
 	}
 
 	private void closeAll() {
