@@ -20,7 +20,7 @@ public class GUI
 {
 
 	//Thread receiver;
-	JTextArea packetsText = new JTextArea(1, 5);
+	JTextArea packetsText = new JTextArea(1, 15);
 	JFrame guiClient;
 	JButton Transfer;
 
@@ -32,12 +32,12 @@ public class GUI
 		guiClient.setResizable(false);
 
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JLabel senderAddrLabel  = new JLabel("Sender IP Address:");
-		JLabel receiverPortLabel  = new JLabel("Receiver Port:          ");
-		JLabel outputFile  = new JLabel("Output File:");
-		JLabel Unreliable   = new JLabel("Unreliable transport: ");
-		JLabel senderPort  = new JLabel("Sender Port:");
-		JLabel Packets  = new JLabel("Accepted number of accessed packets:");
+		JLabel senderAddrLabel  = new JLabel("Sender IP address:");
+		JLabel receiverPortLabel  = new JLabel("Receiver port:");
+		JLabel outputFile  = new JLabel("Output file:");
+		JLabel Unreliable   = new JLabel("Unreliable transport:");
+		JLabel senderPort  = new JLabel("Sender port:");
+		JLabel Packets  = new JLabel("Number of accepted packets:");
 
 		// check box 
 		JCheckBox UnreliableCheckBox  = new JCheckBox("");
@@ -112,10 +112,10 @@ public class GUI
 
 						Transfer.setEnabled(false);
 						receiver.start();
-
 					}
 
 				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(null, "ERROR: Invalid parameters", null, JOptionPane.ERROR_MESSAGE);
 					e1.printStackTrace();
 				}
 			}

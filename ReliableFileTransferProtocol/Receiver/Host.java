@@ -25,13 +25,11 @@ abstract public class Host {
 	}
 	
 	static void printException(Exception e) {
-		System.out.println(e.getMessage());
 		e.printStackTrace();
 	}
 
 	static void printException(Exception e, String msg) {
 		System.out.println(msg);
-		System.out.println(e.getMessage());
 		e.printStackTrace();
 	}
 }
