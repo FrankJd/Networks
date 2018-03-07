@@ -33,7 +33,8 @@ public class GUI
 
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel senderAddrLabel  = new JLabel("Sender IP address:");
-		JLabel receiverPortLabel  = new JLabel("Receiver port:");
+
+		JLabel receiverPortLabel  = new JLabel("Receiver port:         ");
 		JLabel outputFile  = new JLabel("Output file:");
 		JLabel Unreliable   = new JLabel("Unreliable transport:");
 		JLabel senderPort  = new JLabel("Sender port:");
