@@ -111,6 +111,9 @@ public class Receiver extends Host implements Runnable {
 				((ReceiverSocket) socket).sendACK();
 			}
 		}
+		
+		//remove timeout
+		socket.setSoTimeout(0);
 
 		while (!EOT) {
 			((ReceiverSocket) socket).receive(reliable);

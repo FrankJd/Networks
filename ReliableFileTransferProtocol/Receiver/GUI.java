@@ -16,7 +16,6 @@ import javax.swing.*;
  * 	Receiver
  */
 
-@SuppressWarnings("serial")
 public class GUI
 {
 
@@ -86,8 +85,6 @@ public class GUI
 
 		guiClient.add(panel);
 
-
-
 		Transfer.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent e) { }
@@ -112,12 +109,12 @@ public class GUI
 						int prot_sender = Integer.parseInt(port_b);
 						Receiver r = new Receiver(GUI.this, port_reveiver, prot_sender, senderAddr.getText(), !UnreliableCheckBox.isSelected(), file.getText());
 						Thread receiver = new Thread(r);
-										
-							Transfer.setEnabled(false);
-							receiver.start();
-							
-						}
-				
+
+						Transfer.setEnabled(false);
+						receiver.start();
+
+					}
+
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -134,17 +131,11 @@ public class GUI
 		guiClient.setVisible(true);
 	}
 
-	
+	public void displayPacketCount(Integer number) {
+		packetsText.setText(number.toString());
+	}
 
-		
-	
-		public void displayPacketCount(Integer number) {
-			packetsText.setText(number.toString());
-		}
-	
 	public void shit() {
 		Transfer.setEnabled(true);
 	}
-
-
 }
