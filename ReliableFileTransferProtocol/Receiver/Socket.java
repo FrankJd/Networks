@@ -1,3 +1,10 @@
+/*
+ * Author: Troy Nechanicky, nech5860, 150405860 
+ * 	Frank Khalil, khal6600, 160226600
+ * Group: 08
+ * Version: March 6, 2018
+ */
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -5,11 +12,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 public class Socket extends DatagramSocket {
-	private int localPort;
-	private int receiverPort;
-	private InetAddress receiverAddr;
 	byte[] sendBuf;
-	private byte[] receiveBuf;
+	byte[] receiveBuf;
 	DatagramPacket sendPacket, receivePacket;
 	final static int BUF_SIZE = 125; 
 
@@ -22,9 +26,6 @@ public class Socket extends DatagramSocket {
 	Socket(int localPort, int receiverPort, InetAddress receiverAddr) throws SocketException {
 		super(localPort);
 
-		this.localPort = localPort;
-		this.receiverPort = receiverPort;
-		this.receiverAddr = receiverAddr;
 		sendBuf = new byte[BUF_SIZE];
 		receiveBuf = new byte[BUF_SIZE];
 		sendPacket = new DatagramPacket(sendBuf, BUF_SIZE, receiverAddr, receiverPort);

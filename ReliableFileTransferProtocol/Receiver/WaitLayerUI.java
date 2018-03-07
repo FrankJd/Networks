@@ -1,26 +1,21 @@
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
-
 import javax.swing.JComponent;
 import javax.swing.JLayer;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.plaf.LayerUI;
 
-
-
-
+@SuppressWarnings("serial")
 class WaitLayerUI extends LayerUI<JPanel> implements ActionListener
 {
-
     private boolean mIsRunning;
     private boolean mIsFadingOut;
     private Timer mTimer;
@@ -46,7 +41,6 @@ class WaitLayerUI extends LayerUI<JPanel> implements ActionListener
 
         float fade = (float) mFadeCount / (float) mFadeLimit;
        
-
         // Paint the wait indicator.
         int s = Math.min(w, h) / 5;
         int cx = w / 2;
@@ -57,11 +51,12 @@ class WaitLayerUI extends LayerUI<JPanel> implements ActionListener
         g2.rotate(Math.PI * mAngle / 180, cx, cy);
         for (int i = 0; i < 12; i++)
         {
-            float scale = (11.0f - (float) i) / 11.0f;
+            float scale = Math.abs((11.0f - (float) i) / 11.0f);
+         //   System.out.println(i + "" + fade);
             g2.drawLine(cx + s, cy, cx + s * 2, cy);
             g2.rotate(-Math.PI / 6, cx, cy);
             g2.setComposite(AlphaComposite.getInstance(
-                    AlphaComposite.SRC_OVER, scale * fade));
+                    AlphaComposite.SRC_OVER, scale * Math.abs(fade)));
         }
 
         g2.dispose();
@@ -116,7 +111,7 @@ class WaitLayerUI extends LayerUI<JPanel> implements ActionListener
     }
 
     @Override
-    public void applyPropertyChange(PropertyChangeEvent pce, JLayer l)
+    public void applyPropertyChange(PropertyChangeEvent pce, @SuppressWarnings("rawtypes") JLayer l)
     {
         if ("tick".equals(pce.getPropertyName()))
         {

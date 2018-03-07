@@ -1,3 +1,10 @@
+/*
+ * Author: Troy Nechanicky, nech5860, 150405860 
+ * 	Frank Khalil, khal6600, 160226600
+ * Group: 08
+ * Version: March 6, 2018
+ */
+
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -5,7 +12,12 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.nio.ByteBuffer;
+
+/* Relies on the following files to be in default package:
+ * 	Host
+ *  SenderSocket
+ *  Socket
+ */
 
 public class Sender extends Host {
 	private long startTime;
@@ -60,9 +72,7 @@ public class Sender extends Host {
 		int bytesRead;
 		boolean received = false;
 		double transmissionTime;
-		byte[] timeBytes = new byte[Double.BYTES];
 		int timeoutMilli = Math.max(1, timeout / 1000);
-		long sent = 0;
 
 		while (!received) {
 			socket.receive();
@@ -74,8 +84,8 @@ public class Sender extends Host {
 		startTime = System.nanoTime();
 
 		while ((bytesRead = fileBuf.read(buf, 0, buf.length)) != -1) {
+
 			socket.send(buf, bytesRead);
-			sent += bytesRead;
 			try {
 				socket.receive();
 			}
@@ -107,25 +117,7 @@ public class Sender extends Host {
 				received = true;
 			}
 		}
-		transmissionTime = ((double) (System.nanoTime() - startTime)) / 1E9;
-
-		/*ByteBuffer.wrap(timeBytes).putDouble(transmissionTime);
-
-		received = false;
-
-		while (!received) {
-			socket.send(timeBytes, Double.BYTES);
-			try {
-				socket.receive();
-			}
-			catch(SocketTimeoutException e) {
-				continue;
-			}
-			if (isValidSeq(socket.receivePacket.getData()[0])) {
-				nextSeq();
-				received = true;
-			}
-		}*/
+		transmissionTime = ((double) (System.nanoTime() - startTime)) / 1E6;
 
 		return transmissionTime;
 	}

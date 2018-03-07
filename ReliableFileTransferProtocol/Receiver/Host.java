@@ -1,3 +1,9 @@
+/*
+ * Author: Troy Nechanicky, nech5860, 150405860 
+ * 	Frank Khalil, khal6600, 160226600
+ * Group: 08
+ * Version: March 6, 2018
+ */
 
 abstract public class Host {
 	Socket socket;
