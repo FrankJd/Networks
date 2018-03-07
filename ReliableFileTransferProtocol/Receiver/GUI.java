@@ -1,3 +1,4 @@
+
 /*
  * Author: Troy Nechanicky, nech5860, 150405860 
  * Frank Khalil, khal6600, 160226600
@@ -16,9 +17,9 @@ import javax.swing.*;
  */
 
 @SuppressWarnings("serial")
-public class GUI extends javax.swing.JFrame
+public class GUI
 {
-	final WaitLayerUI layerUI = new WaitLayerUI();
+
 	//Thread receiver;
 	JTextArea packetsText = new JTextArea(1, 5);
 	JFrame guiClient;
@@ -26,7 +27,7 @@ public class GUI extends javax.swing.JFrame
 
 	public GUI()
 	{   	
-		JFrame guiClient = new JFrame("Client");
+		guiClient = new JFrame("Client");
 
 		guiClient.setSize (660, 200);
 		guiClient.setResizable(false);
@@ -83,9 +84,9 @@ public class GUI extends javax.swing.JFrame
 		panel.add(ipPanle5);
 		panel.add(ipPanle6);
 
-		JLayer<JPanel> jlayer = new JLayer<>(panel, layerUI);
+		guiClient.add(panel);
 
-		guiClient.add(jlayer);
+
 
 		Transfer.addMouseListener(new MouseListener() {
 			@Override
@@ -103,8 +104,7 @@ public class GUI extends javax.swing.JFrame
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				try {
-					if (Transfer.isEnabled()) java.awt.EventQueue.invokeLater(new Runnable()
-					{
+					if (Transfer.isEnabled()) {
 
 						String  port_a = receiverPort.getText();
 						String  port_b = SenderPortText.getText();
@@ -112,14 +112,12 @@ public class GUI extends javax.swing.JFrame
 						int prot_sender = Integer.parseInt(port_b);
 						Receiver r = new Receiver(GUI.this, port_reveiver, prot_sender, senderAddr.getText(), !UnreliableCheckBox.isSelected(), file.getText());
 						Thread receiver = new Thread(r);
-						@Override
-						public void run()
-						{						
+										
 							Transfer.setEnabled(false);
 							receiver.start();
 							
 						}
-					});
+				
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -136,11 +134,17 @@ public class GUI extends javax.swing.JFrame
 		guiClient.setVisible(true);
 	}
 
-	public void displayPacketCount(Integer number) {
-		packetsText.setText(number.toString());
-	}
+	
+
+		
+	
+		public void displayPacketCount(Integer number) {
+			packetsText.setText(number.toString());
+		}
 	
 	public void shit() {
 		Transfer.setEnabled(true);
 	}
+
+
 }
