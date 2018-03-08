@@ -14,7 +14,7 @@ import java.net.SocketException;
  */
 
 public class ReceiverSocket extends Socket {
-	private int receivedPackets = 0;
+	int receivedPackets = 0;
 
 	ReceiverSocket(int localPort, int receiverPort, InetAddress receiverAddr) throws SocketException {
 		super(localPort, receiverPort, receiverAddr);
@@ -29,7 +29,12 @@ public class ReceiverSocket extends Socket {
 		receivedPackets++;
 		
 		//"drop" every 10th packet
-		if (!reliable && (receivedPackets % 10 == 0)) receive(receivePacket);
+		if (!reliable && (receivedPackets % 10 == 0)) {
+			//need to decrement and then increment after in case receive throws exception
+			receivedPackets--;
+			receive(receivePacket);
+			receivedPackets++;
+		}
 
 		return;
 	}

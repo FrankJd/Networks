@@ -60,6 +60,7 @@ public class Receiver extends Host implements Runnable {
 			JOptionPane.showMessageDialog(null, "ERROR: Unexpected exception", null, JOptionPane.ERROR_MESSAGE);
 			printException(e);
 			closeAll();
+			gui.shit();
 			return;
 		}
 
@@ -108,6 +109,7 @@ public class Receiver extends Host implements Runnable {
 				received = true;
 				nextSeq();	
 			} else {
+				((ReceiverSocket) socket).receivedPackets--;
 				((ReceiverSocket) socket).sendACK();
 			}
 		}
@@ -131,6 +133,7 @@ public class Receiver extends Host implements Runnable {
 					fileOutput.write(buf, 1, bufLen-1);
 				}
 			} else {
+				((ReceiverSocket) socket).receivedPackets--;
 				nextSeq();
 				((ReceiverSocket) socket).sendACK();
 			}
